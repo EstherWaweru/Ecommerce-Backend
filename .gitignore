@@ -1,4 +1,4 @@
 .env
 ENV/
 .pyc*
-__pycacge__/
+__pycache__/
