@@ -1,4 +1,4 @@
-[![Build Status](https://travis-ci.org/EstherWaweru/Ecommerce-Backend.svg?branch=master)](https://travis-ci.org/EstherWaweru/Ecommerce-Backend) [![Coverage Status](https://coveralls.io/repos/github/EstherWaweru/Ecommerce-Backend/badge.svg?branch=master)](https://coveralls.io/github/EstherWaweru/Ecommerce-Backend?branch=master)
+[![Build Status](https://travis-ci.org/EstherWaweru/Ecommerce-Backend.svg?branch=master)](https://travis-ci.org/EstherWaweru/Ecommerce-Backend) [![Coverage Status](https://coveralls.io/repos/github/EstherWaweru/Ecommerce-Backend/badge.svg?branch=master)](https://coveralls.io/github/EstherWaweru/Ecommerce-Backend?branch=master) [![codecov](https://codecov.io/gh/EstherWaweru/Ecommerce-Backend/branch/master/graph/badge.svg?token=7DOQIWCJHF)](https://codecov.io/gh/EstherWaweru/Ecommerce-Backend)
 # Ecommerce-Backend
 # ecommerce # authentication 
 ## Ecommerce Backend
