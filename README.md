@@ -1,3 +1,4 @@
+[![Build Status](https://travis-ci.org/EstherWaweru/Ecommerce-Backend.svg?branch=master)](https://travis-ci.org/EstherWaweru/Ecommerce-Backend)
 # Ecommerce-Backend
 # ecommerce # authentication 
 ## Ecommerce Backend
