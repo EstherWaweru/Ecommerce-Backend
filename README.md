@@ -46,4 +46,7 @@ This repository is owned by <https://github.com/EstherWaweru> . To contribute to
 ### Database ERP Diagram
 ![Database ERP Image](DatabaseErp.png)
 
+### Module Diagram
+![Modules](Modules.png)
+
 
