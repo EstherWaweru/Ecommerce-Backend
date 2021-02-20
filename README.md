@@ -43,3 +43,7 @@ The project is hosted on this link <> .The username credential is admin@gmail.co
 ## Contributing
 This repository is owned by <https://github.com/EstherWaweru> . To contribute to this project raise an issue .
 
+### Database ERP Diagram
+![Database ERP PDF](https://github.com/EstherWaweru/Ecommerce-Backend/blob/develop/database.pdf?raw=true)
+
+
