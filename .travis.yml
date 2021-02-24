@@ -1,27 +1,26 @@
 language: python
 python:
-  - "3.6"
-  - "3.7"
-  - "3.8"
-  - "3.9"
-
+- '3.6'
+- '3.7'
+- '3.8'
+- '3.9'
 services:
-   - mysql
+- mysql
 env:
+  matrix:
   - DJANGO=3.1.6
   - DB=mysql
+  global:
+    secure: SCTi+UzXVkDc1/7xYx1tOuHAQ7ATgt1VRvkEPQNOHzH6jvzXCuYSukR1b4gNfz7ERvO7ZEo3+zlMpMKfU8UjLRrY92zBw6oO+hXG7yF5Cfz3aH1fWTx5T9zs2AptQCgMACINPlEmiuVHXwf686ZgC0cU1zvKyhsdLSvta+ikNXZGSgiMwpuw3rcgnIwGIA8T5KvnG3wV0z+rFoghP0fNRr5hicr85bbOzJkwbCuCcxBMXbDyA41ZtzmPMg8h5yQSA5aOffE9SoduaGpcaXpuTr9C74cVxxqrKfFGcDOa1UrXrz3SaL84VG2S7D82BpRc7XP+giQ2rFoKwo3uolK+c5H/NpSpLPnBaag0JSLe1SYO37UrD6rLJvNGImSVwI8umCnrbE6NBgTT8qVYd2EtHoj3QA6AqKhGg3AB7u7hJodyI/VYqqzTgpc/FnDYgb5hnWG2NprCDAJO5aicgU+5ylNJNJF/2B8ZdQNMncar3LjRp+KIc+2XiptV5cR6LImAeoT+ffg11+U5HXLa04SwPu5p6JFZ2oyTtMYqahr2hlCa0hF7DeMTzxJbceuey990Yb92lwu2l/PvbDlJfVF+5kQhAzyWvX1QZAwFNw0BUAmyXZ+tNFisgwfG54qyLXhMaaTk7nCLurk1glJdxO2L6G3Wk1QXQdr6Lfa4/BcjZmw=
 install:
-  - pip install -r requirements.txt
-  - pip install coveralls
-  - pip install coverage
-  - pip install codecov
+- pip install -r requirements.txt
+- pip install coveralls
+- pip install coverage
+- pip install codecov
 before_script:
-  - mysql -e 'create database ecommerce_test;' -u root
+- mysql -e 'create database ecommerce_test;' -u root
 script:
-  - python manage.py test
+- python manage.py test
 after_sucess:
-  - coveralls
-  - codecov
-
-
-  
+- coveralls
+- codecov
