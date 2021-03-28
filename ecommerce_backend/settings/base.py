@@ -119,4 +119,7 @@ STATIC_URL = '/static/'
 STATICFILES_DIR=[STATIC_DIR]
 MEDIA_ROOT=MEDIA_DIR
 
+#include this to use the cutom user
+AUTH_USER_MODEL='accounts.User'
+
 
