@@ -14,7 +14,7 @@ DATABASES = {
         
 
         #mysql database
-        'ENGINE':'django.db.backend.mysql',
+        'ENGINE':'django.db.backends.mysql',
         'NAME': env('DB_NAME'),
         'USER': env('DB_USER'),
         'PASSWORD': env('DB_PASSWORD'),

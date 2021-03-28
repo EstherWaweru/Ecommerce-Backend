@@ -16,7 +16,10 @@ env=Env()
 env.read_env()
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
-BASE_DIR = Path(__file__).resolve().parent.parent
+BASE_DIR = Path(__file__).resolve().parent.parent.parent
+TEMPLATE_DIR=BASE_DIR / 'templates/'
+STATIC_DIR=BASE_DIR / 'static'
+MEDIA_DIR=BASE_DIR / 'media'
 
 
 # Quick-start development settings - unsuitable for production
@@ -56,7 +59,9 @@ ROOT_URLCONF = 'ecommerce_backend.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [],
+        'DIRS': [
+            TEMPLATE_DIR
+        ],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -111,5 +116,7 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/3.1/howto/static-files/
 
 STATIC_URL = '/static/'
+STATICFILES_DIR=[STATIC_DIR]
+MEDIA_ROOT=MEDIA_DIR
 
 
