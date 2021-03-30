@@ -118,6 +118,7 @@ USE_TZ = True
 STATIC_URL = '/static/'
 STATICFILES_DIR=[STATIC_DIR]
 MEDIA_ROOT=MEDIA_DIR
+STATIC_ROOT=BASE_DIR / 'staticfiles'
 
 #include this to use the cutom user
 AUTH_USER_MODEL='accounts.User'
