@@ -5,7 +5,8 @@ from . import views
 
 urlpatterns=[
     path('signup/',views.signup,name='signup'),
-    path('activate/<uidb64>/token/',views.activate,name='activate'),
+    path('activate/<uidb64>/<token>/',views.activate,name='activate'),
+    
 
 
 ]

@@ -17,7 +17,7 @@ env.read_env()
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent.parent
-TEMPLATE_DIR=BASE_DIR / 'templates/'
+TEMPLATE_DIR=BASE_DIR / 'templates'
 STATIC_DIR=BASE_DIR / 'static'
 MEDIA_DIR=BASE_DIR / 'media'
 
@@ -116,9 +116,9 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/3.1/howto/static-files/
 
 STATIC_URL = '/static/'
-STATICFILES_DIR=[STATIC_DIR]
+STATICFILES_DIRS = [STATIC_DIR]
 MEDIA_ROOT=MEDIA_DIR
-STATIC_ROOT=BASE_DIR / 'staticfiles'
+# STATIC_ROOT=BASE_DIR / 'staticfiles'
 
 #include this to use the cutom user
 AUTH_USER_MODEL='accounts.User'

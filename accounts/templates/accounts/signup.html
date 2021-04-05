@@ -1,22 +1,9 @@
-{% load static %}
 
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Ecommerce| Registration Page </title>
+{% extends 'accounts/base.html' %}
 
-  <!-- Google Font: Source Sans Pro -->
-  <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,700&display=fallback">
-  <!-- Font Awesome -->
-  <link rel="stylesheet" href="{% static 'plugins/fontawesome-free/css/all.min.css' %}">
-  <!-- icheck bootstrap -->
-  <link rel="stylesheet" href="{% static 'plugins/icheck-bootstrap/icheck-bootstrap.min.css' %}">
-  <!-- Theme style -->
-  <link rel="stylesheet" href="{% static 'dist/css/adminlte.min.css' %}">
-</head>
-<body class="hold-transition register-page">
+{% block main_content %}
+
+
 <div class="register-box">
   <div class="card card-outline card-primary">
     <div class="card-header text-center">
@@ -28,7 +15,7 @@
       <form  method="post">
           {%csrf_token%}
         <div class="input-group mb-3">
-          <input type="text" class="form-control" placeholder="First name">
+          <input type="text" class="form-control" name="first_name" id="first_name" placeholder="First name">
           <div class="input-group-append">
             <div class="input-group-text">
               <span class="fas fa-user"></span>
@@ -36,7 +23,7 @@
           </div>
         </div>
         <div class="input-group mb-3">
-            <input type="text" class="form-control" placeholder="Last name">
+            <input type="text" class="form-control" name="last_name" id="last_name" placeholder="Last name">
             <div class="input-group-append">
               <div class="input-group-text">
                 <span class="fas fa-user"></span>
@@ -44,7 +31,7 @@
             </div>
           </div>
         <div class="input-group mb-3">
-          <input type="email" class="form-control" placeholder="Email">
+          <input type="email" class="form-control" name="email" id="email" placeholder="Email">
           <div class="input-group-append">
             <div class="input-group-text">
               <span class="fas fa-envelope"></span>
@@ -52,7 +39,7 @@
           </div>
         </div>
         <div class="input-group mb-3">
-          <input type="password" class="form-control" placeholder="Password">
+          <input type="password" class="form-control" name="password1" id="password1" placeholder="Password">
           <div class="input-group-append">
             <div class="input-group-text">
               <span class="fas fa-lock"></span>
@@ -60,7 +47,7 @@
           </div>
         </div>
         <div class="input-group mb-3">
-          <input type="password" class="form-control" placeholder="Retype password">
+          <input type="password" class="form-control" name="password2" id="password2" placeholder="Confirm password">
           <div class="input-group-append">
             <div class="input-group-text">
               <span class="fas fa-lock"></span>
@@ -68,45 +55,46 @@
           </div>
         </div>
         <div class="row">
-          <div class="col-8">
-            <div class="icheck-primary">
-              <input type="checkbox" id="agreeTerms" name="terms" value="agree">
-              <label for="agreeTerms">
-               I agree to the <a href="#">terms</a>
-              </label>
-            </div>
-          </div>
+          
           <!-- /.col -->
-          <div class="col-4">
+          <div class="col-12">
             <button type="submit" class="btn btn-primary btn-block">Register</button>
           </div>
           <!-- /.col -->
         </div>
       </form>
 
-      <div class="social-auth-links text-center">
-        <a href="#" class="btn btn-block btn-primary">
-          <i class="fab fa-facebook mr-2"></i>
-          Sign up using Facebook
-        </a>
-        <a href="#" class="btn btn-block btn-danger">
-          <i class="fab fa-google-plus mr-2"></i>
-          Sign up using Google+
-        </a>
-      </div>
-
-      <a href="login.html" class="text-center">Have an account?Sign In</a>
+      
+      <div class="text-center">
+          Have an account?
+      <a  href="login.html" >Sign In</a>
+    </div>
     </div>
     <!-- /.form-box -->
   </div><!-- /.card -->
 </div>
 <!-- /.register-box -->
+{%endblock%}
+{%block custom_js %}
+{% if messages %} {% for message in messages %}
+<script type=text/javascript>
+    $(document).ready(function() {
+        
+        toastr.options = {
 
-<!-- jQuery -->
-<script src="{%static 'plugins/jquery/jquery.min.js' %}"></script>
-<!-- Bootstrap 4 -->
-<script src="{%static 'plugins/bootstrap/js/bootstrap.bundle.min.js'%}"></script>
-<!-- AdminLTE App -->
-<script src="{%static 'dist/js/adminlte.min.js'%}"></script>
-</body>
-</html>
+"progressBar": true,
+"showDuration": "20",
+
+};
+
+toastr.{{message.tags}}('{{message}}');
+
+       
+        
+});
+    
+</script>
+{% endfor %} {% endif %}
+
+{%endblock custom_js%}
+
