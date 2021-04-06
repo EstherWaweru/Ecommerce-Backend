@@ -1,5 +1,5 @@
 from django.shortcuts import render,redirect
-from .forms import SignUpForm
+from .forms import SignUpForm,LoginForm
 from django.contrib.auth.tokens import default_token_generator
 from .models import User
 from django.contrib.sites.shortcuts import get_current_site
@@ -13,7 +13,7 @@ import traceback
 from django.contrib import messages
 from django.http import HttpResponse, HttpResponseRedirect
 from django.urls import reverse
-from django.contrib.auth import login
+from django.contrib.auth import login,authenticate,logout
 
 
 def home(request):
@@ -64,19 +64,50 @@ def activate(request,uidb64,token):
     if user is not None and default_token_generator.check_token(user,token):
         user.is_active=True
         user.save()
-        #login user 
         login(request,user)
         return redirect ('home')
-        
-        #toast success
         messages.success(request,'Email confirmation successful!')
         return HttpResponseRedirect(reverse('home'))
     else:
-        #else:
-        # return ('account/account_invalid.html')
-        #toast error on homepage
         messages.error(request,'Activation Link is Invalid')
         return HttpResponseRedirect(reverse('signup'))
+def user_login(request):
+    
+    if request.method=='POST':
+        form=LoginForm(request.POST)
+        if form.is_valid():
+            email=form.cleaned_data['email']
+            password=form.cleaned_data['password']
+            remember_me=form.cleaned_data['remember_me']
+            # try:
+            user=authenticate(email=email,password=password)
+            # except Exception as e:
+            #     traceback.print_exc()
+            if user!=None:
+                login(request,user)
+                if not remember_me:
+                    request.session.set_expiry(0)
+                return HttpResponseRedirect(reverse('home'))
+            else:
+                messages.error(request,'Invalid email or password!')
+                return HttpResponseRedirect(reverse('user_login'))
+        else:
+            messages.error(request,form.errors)
+            return HttpResponseRedirect(reverse('user_login'))
+    else:
+        form=LoginForm()
+        return render(request,'accounts/login.html',{'form':form})
+
+def user_logout(request):
+    logout(request)
+    #to do 
+    # create a landing page and redirect to that instead
+    return HttpResponseRedirect(reverse('user_login'))
+
+
+    
+
+
 
 
 
