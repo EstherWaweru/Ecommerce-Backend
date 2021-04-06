@@ -13,6 +13,7 @@ import traceback
 from django.contrib import messages
 from django.http import HttpResponse, HttpResponseRedirect
 from django.urls import reverse
+from django.contrib.auth import login
 
 
 def home(request):
@@ -64,15 +65,18 @@ def activate(request,uidb64,token):
         user.is_active=True
         user.save()
         #login user 
-        #login(request,user)
-        #return redirect ('home')
+        login(request,user)
+        return redirect ('home')
+        
+        #toast success
+        messages.success(request,'Email confirmation successful!')
+        return HttpResponseRedirect(reverse('home'))
+    else:
         #else:
         # return ('account/account_invalid.html')
-        #toat success
-        return HttpResponse('Thank you for ypur email confirmation.You can proceed to login to your account')
-    else:
         #toast error on homepage
-        return HttpResponse('Activation Link is invalid')
+        messages.error(request,'Activation Link is Invalid')
+        return HttpResponseRedirect(reverse('signup'))
 
 
 
