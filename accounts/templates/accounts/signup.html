@@ -56,17 +56,24 @@
           
           <!-- /.col -->
           <div class="col-12">
+            <!-- reCAPTCHA input -->
+            <input type="hidden" id="g-recaptcha-response" name="g-recaptcha-response">
             <button type="submit" class="btn btn-success btn-block">Register</button>
           </div>
           <!-- /.col -->
         </div>
       </form>
 
-      
+      <br>
       <div class="text-center">
           Have an account?
       <a  href="{% url 'user_login' %}" >Sign In</a>
     </div>
+    <br>
+    <h6 >This site is protected by reCAPTCHA and the Google</h6>
+     <h6 > <a href="https://policies.google.com/privacy">Privacy Policy</a> and
+      <a href="https://policies.google.com/terms">Terms and Conditions</a> apply.
+     </h6>
     </div>
     <!-- /.form-box -->
   </div><!-- /.card -->
@@ -74,6 +81,17 @@
 <!-- /.register-box -->
 {%endblock%}
 {%block custom_js %}
+<!-- reCAPTCHA API -->
+<script src='https://www.google.com/recaptcha/api.js?render={{recaptcha_site_key}}'></script>
+<script>
+  //global grecaptcha
+  grecaptcha.ready(function() {
+    grecaptcha.execute('{{recaptcha_site_key}}', {action: 'submit'}).then(function(token) {
+      document.getElementById('g-recaptcha-response').value = token;
+    });
+  });
+</script>
+
 {% if messages %} {% for message in messages %}
 <script type=text/javascript>
     $(document).ready(function() {
@@ -82,7 +100,7 @@
 
 "progressBar": true,
 "showDuration": "20",
-"positionClass": "toast-bottom-right",
+
 
 };
 
