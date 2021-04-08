@@ -1,6 +1,8 @@
 #DEVELOPMENT SETTINGS
 # SECURITY WARNING: don't run with debug turned on in production!
 from ecommerce_backend.settings.base import *
+GOOGLE_RECAPTCHA_SITE_KEY=env('GOOGLE_RECAPTCHA_SITE_KEY')
+GOOGLE_RECAPTCHA_SECRET_KEY=env('GOOGLE_RECAPTCHA_SECRET_KEY')
 DEBUG = True
 ALLOWED_HOSTS = ['127.0.0.1',]
 

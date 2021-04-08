@@ -14,6 +14,10 @@ from django.contrib import messages
 from django.http import HttpResponse, HttpResponseRedirect
 from django.urls import reverse
 from django.contrib.auth import login,authenticate,logout
+import requests
+import json
+from django.http import JsonResponse
+
 
 
 def home(request):
@@ -25,34 +29,39 @@ def signup(request):
     if request.method=='POST':
         form=SignUpForm(request.POST)
         if form.is_valid():
-            try:
-                user=form.save(commit=False)
-                user.is_active=False
-                user.save()
-                current_site=get_current_site(request)
-                mail_subject='Activate your account'
-                context1={'user':user,
-                        'domain':current_site.domain,
-                        'uid':urlsafe_base64_encode(force_bytes(user.pk)),
-                        'token':default_token_generator.make_token(user)
-                        }
-                message=render_to_string('accounts/account_activation_email.html',context1)
-                email_from = settings.EMAIL_HOST_USER
-                to_email=form.cleaned_data.get('email')
-                email=EmailMessage(mail_subject,message,email_from,[to_email])
-                email.send(fail_silently=False)
-                messages.success(request,'Success.Please confirm your email address to complete registration')
+            result=recaptcha_validation(request)
+            if result['success']:
+                try:
+                    user=form.save(commit=False)
+                    user.is_active=False
+                    user.save()
+                    current_site=get_current_site(request)
+                    mail_subject='Activate your account'
+                    context1={'user':user,
+                            'domain':current_site.domain,
+                            'uid':urlsafe_base64_encode(force_bytes(user.pk)),
+                            'token':default_token_generator.make_token(user)
+                            }
+                    message=render_to_string('accounts/account_activation_email.html',context1)
+                    email_from = settings.EMAIL_HOST_USER
+                    to_email=form.cleaned_data.get('email')
+                    email=EmailMessage(mail_subject,message,email_from,[to_email])
+                    email.send(fail_silently=False)
+                    messages.success(request,'Success.Please confirm your email address to complete registration')
+                    return HttpResponseRedirect(reverse("signup"))
+                except Exception as e:
+                    traceback.print_exc()
+                    messages.error(request,e)
+                    return HttpResponseRedirect(reverse("signup"))  
+            else: 
+                messages.error(request,'Invalid reCAPTCHA. Please try again.')
                 return HttpResponseRedirect(reverse("signup"))
-            except Exception as e:
-                traceback.print_exc()
-                messages.error(request,e)
-                return HttpResponseRedirect(reverse("signup"))   
         else:
             messages.error(request,form.errors)
             return HttpResponseRedirect(reverse("signup"))
     else:
         form=SignUpForm()
-        return render(request,'accounts/signup.html',{'form':form})
+        return render(request,'accounts/signup.html',{'form':form,'recaptcha_site_key':settings.GOOGLE_RECAPTCHA_SITE_KEY})
 
 
 def activate(request,uidb64,token):
@@ -103,6 +112,22 @@ def user_logout(request):
     #to do 
     # create a landing page and redirect to that instead
     return HttpResponseRedirect(reverse('user_login'))
+
+def recaptcha_validation(request):
+    '''
+    Validate recaptcha site key with the secret key
+    '''
+    recaptcha_response=request.POST.get('g-recaptcha-response')
+    data={
+    'secret':settings.GOOGLE_RECAPTCHA_SECRET_KEY,
+    'response':recaptcha_response}
+    r = requests.post('https://www.google.com/recaptcha/api/siteverify', data=data)
+    result=r.json()
+    print(result)
+    return result
+
+
+
 
 
     
