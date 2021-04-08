@@ -19,6 +19,32 @@ scratch. This page gets rid of all links and provides the needed markup only.
   <!-- Theme style -->
   <link rel="stylesheet" href="{%static 'dist/css/adminlte.min.css' %}">
   <link rel="stylesheet" href="{% static 'plugins/toastr/toastr.min.css' %}">
+  <style>
+    .form-group>input:focus {
+        font-size: 12px;
+        -moz-box-shadow: 0 0 4px #f29e24 !important;
+        -webkit-box-shadow: 0 0 4px #f29e24 !important;
+        box-shadow: 0 0 4px #f29e24 !important;
+        border: 1px solid #f29e24 !important;
+    }
+    .centeritems {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+     margin: 7% auto; 
+    }
+    
+   
+    
+    .card {
+        margin-left: 1px;
+        margin-right: 1px;
+        height: 94%;
+        -moz-box-shadow: 0 0 10px lightgray !important;
+        -webkit-box-shadow: 0 0 10px lightgray !important;
+        box-shadow: 0 0 10px lightgray !important;
+    }
+</style>
 </head>
 <body class="hold-transition layout-top-nav">
 <div class="wrapper">
