@@ -39,6 +39,7 @@
           </div>
           <!-- /.col -->
           <div class="col-4">
+            <input type="hidden" id="g-recaptcha-response" name="g-recaptcha-response">
             <button type="submit" class="btn btn-success btn-block">Sign In</button>
           </div>
           <!-- /.col -->
@@ -60,6 +61,11 @@
       </p>
     </div>
     </div>
+    <br>
+    <h6 >This site is protected by reCAPTCHA and the Google</h6>
+     <h6 > <a href="https://policies.google.com/privacy">Privacy Policy</a> and
+      <a href="https://policies.google.com/terms">Terms and Conditions</a> apply.
+     </h6>
     </div>
     <!-- /.card-body -->
   </div>
@@ -68,6 +74,15 @@
 <!-- /.login-box -->
 {%endblock main_content%}
 {%block custom_js %}
+<script src='https://www.google.com/recaptcha/api.js?render={{recaptcha_site_key}}'></script>
+<script>
+  //global grecaptcha
+  grecaptcha.ready(function() {
+    grecaptcha.execute('{{recaptcha_site_key}}', {action: 'submit'}).then(function(token) {
+      document.getElementById('g-recaptcha-response').value = token;
+    });
+  });
+</script>
 {% if messages %} {% for message in messages %}
 <script type=text/javascript>
     $(document).ready(function() {
