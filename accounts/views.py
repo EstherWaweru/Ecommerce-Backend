@@ -2,6 +2,7 @@ from django.shortcuts import render,redirect
 from .forms import SignUpForm,LoginForm
 from django.contrib.auth.tokens import default_token_generator
 from .models import User
+from django.contrib.auth.models import Group,Permission
 from django.contrib.sites.shortcuts import get_current_site
 from django.core.mail import EmailMessage
 from django.utils.encoding import force_bytes
@@ -26,6 +27,9 @@ def demo(request):
     return render(request,'demo.html')
 
 def signup(request):
+    '''
+    customer registration 
+    '''
     if request.method=='POST':
         form=SignUpForm(request.POST)
         if form.is_valid():
@@ -35,6 +39,8 @@ def signup(request):
                     user=form.save(commit=False)
                     user.is_active=False
                     user.save()
+                    role=Group.objects.get('Customer')
+                    role.user_set.add(user)
                     current_site=get_current_site(request)
                     mail_subject='Activate your account'
                     context1={'user':user,
@@ -81,31 +87,40 @@ def activate(request,uidb64,token):
         messages.error(request,'Activation Link is Invalid')
         return HttpResponseRedirect(reverse('signup'))
 def user_login(request):
-    
+    '''
+    User login with email and password
+    '''
     if request.method=='POST':
         form=LoginForm(request.POST)
+        #recaptcha validation
+        
         if form.is_valid():
-            email=form.cleaned_data['email']
-            password=form.cleaned_data['password']
-            remember_me=form.cleaned_data['remember_me']
-            # try:
-            user=authenticate(email=email,password=password)
-            # except Exception as e:
-            #     traceback.print_exc()
-            if user!=None:
-                login(request,user)
-                if not remember_me:
-                    request.session.set_expiry(0)
-                return HttpResponseRedirect(reverse('home'))
+            result=recaptcha_validation(request)
+            if result['success']:
+                email=form.cleaned_data['email']
+                password=form.cleaned_data['password']
+                remember_me=form.cleaned_data['remember_me']
+                # try:
+                user=authenticate(email=email,password=password)
+                # except Exception as e:
+                #     traceback.print_exc()
+                if user!=None:
+                    login(request,user)
+                    if not remember_me:
+                        request.session.set_expiry(0)
+                    return HttpResponseRedirect(reverse('home'))
+                else:
+                    messages.error(request,'Invalid email or password!')
+                    return HttpResponseRedirect(reverse('user_login'))
             else:
-                messages.error(request,'Invalid email or password!')
+                messages.error(request,result['error-codes'])
                 return HttpResponseRedirect(reverse('user_login'))
         else:
             messages.error(request,form.errors)
             return HttpResponseRedirect(reverse('user_login'))
     else:
         form=LoginForm()
-        return render(request,'accounts/login.html',{'form':form})
+        return render(request,'accounts/login.html',{'form':form,'recaptcha_site_key':settings.GOOGLE_RECAPTCHA_SITE_KEY})
 
 def user_logout(request):
     logout(request)

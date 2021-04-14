@@ -30,6 +30,11 @@ GROUPS={
         #custom permissions
 
     },
+    'Deliverer':{
+        #django app model specific permission
+        #custom permissions
+
+    }
 
 }
 class Command(BaseCommand):
