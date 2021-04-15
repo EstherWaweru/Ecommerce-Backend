@@ -11,6 +11,7 @@ from django.template.loader import render_to_string
 from django.conf import settings
 from django.core.mail import send_mail
 import traceback
+from django.contrib.auth.decorators import login_required,permission_required
 from django.contrib import messages
 from django.http import HttpResponse, HttpResponseRedirect
 from django.urls import reverse
@@ -140,6 +141,26 @@ def recaptcha_validation(request):
     result=r.json()
     print(result)
     return result
+@login_required
+def dashboard(request):
+    '''
+    Admins dashboard
+    TODO:Add a group required decoration
+    '''
+    return render(request,'dashboard.html')
+@login_required
+def roles(request):
+    group_list=Group.objects.all()
+    group_permissions=Permission.objects.all()
+    print("All Groups----------------------")
+    print(group_list)
+    context={'groups':group_list,'permissions':group_permissions}
+    return render(request,'accounts/roles.html',context)
+def role_view(request,group_id):
+    context={'group_id':group_id}
+    return render(request,'accounts/roles.html',context)
+
+
 
 
 

@@ -1,6 +1,4 @@
 ### CREATING GROUPS FOR ECCOMERCE
-
-
 import logging
 from django.contrib.contenttypes.models import ContentType
 from django.core.management.base import BaseCommand
@@ -22,16 +20,20 @@ GROUPS={
     },
     'Customer':{
         #django app model specific permission
+        'user': ['delete','change','view']
+        #custom permissions
+
+
+    },
+    'DeliveryAgent':{
+        #django app model specific permission
+        'user': ['delete','change','view']
         #custom permissions
 
     },
-    'Agent':{
+    'Seller':{
         #django app model specific permission
-        #custom permissions
-
-    },
-    'Deliverer':{
-        #django app model specific permission
+        'user': ['delete','change','view']
         #custom permissions
 
     }
