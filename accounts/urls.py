@@ -9,6 +9,8 @@ urlpatterns=[
     path('activate/<uidb64>/<token>/',views.activate,name='activate'),
     path('login/',views.user_login,name='user_login'),
     path('logout/',views.user_logout,name='user_logout'),
+    path('roles/',views.roles,name='roles'),
+    path('roles/<str:group_id>/',views.role_view,name='role_view'),
     path('password_reset/',auth_views.PasswordResetView.as_view(
         template_name='accounts/password_reset_form.html',
         subject_template_name='accounts/password_reset_subject.txt',

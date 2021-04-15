@@ -1,0 +1,98 @@
+{% extends 'base_copy.html' %}
+{% block page_title %} Dashboard {% endblock page_title %} 
+{%block content_wrapper%}
+<div class="col-sm-6">
+    <ol class="breadcrumb float-sm-right">
+      <li class="breadcrumb-item"><a href="#">Home</a></li>
+      <li class="breadcrumb-item"><a href="#">Layout</a></li>
+      <li class="breadcrumb-item active">Top Navigation</li>
+    </ol>
+  </div>
+{%endblock content_wrapper%}
+{%block main_content%}
+<section class="content">
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-lg-6 col-6">
+                <!-- small box -->
+                <div class="small-box bg-light">
+                    <div class="inner">
+                        <h3>{{ companies }}</h3>
+
+                        <p>Total Companies</p>
+                    </div>
+                    <div class="icon">
+                        <i class="ion ion-pie-graph"></i>
+                    </div>
+                    <a href="" class="small-box-footer">More info <i class="fas fa-arrow-circle-right"></i></a>
+                </div>
+            </div>
+            <!-- ./col -->
+            <div class="col-lg-6 col-6">
+                <!-- small box -->
+                <div class="small-box bg-light">
+                    <div class="inner">
+                        <h3>{{ employees }}</h3>
+
+                        <p>Total Employees</p>
+                    </div>
+                    <div class="icon">
+                        <i class="ion ion-person-add"></i>
+                    </div>
+                    <a href="" class="small-box-footer">More info <i class="fas fa-arrow-circle-right"></i></a>
+                </div>
+            </div>    
+            
+            <h5>Last 10 Created Users</h5>
+            <table id="employee-table" class="table table-bordered table-hover" data-page-length='10'>
+                <thead class="thead-light">
+                    <tr>
+                        <th>Last Login</th>
+                        <th>FullName</th>
+                        <th>Company</th>
+                        <th>Mobile Number</th>
+                        <th>Email</th>
+                        <th>Role</th>
+                        <th>Status</th>
+                    </tr>
+                </thead>
+                <tbody>
+
+                    {% for employee in last_ten_employees %}
+                    <tr class='clickable-row' data-href="">
+                        <td>{{employee.last_login}}</td>
+                        <td>{{ employee.last_name}} {{employee.first_name }} </td>
+                        <td>{{ employee.company.name}}</td>
+                        <td>{{employee.phone_number}}</td>
+                        <td>{{employee.email}}</td>
+                        {% if employee.is_superuser %}
+                        <td><span class="right badge badge-danger">Admin</span></td>
+                        {% else %}
+                        <td><span class="right badge badge-warning">Staff</span></td>
+                        {% endif %}
+                        {% if employee.is_active %}
+                        <td><span class="right badge badge-success">Active</span></td>
+                        {% else %}
+                        <td><span class="right badge badge-danger">Not Active</span></td>
+                        
+                        {% endif %}
+
+                    </tr>
+
+                    {% endfor %}
+
+                </tbody>
+            </table>
+
+           
+        </div>
+    </div>
+    <!-- /.container-fluid -->
+</section>
+{%endblock main_content%} {%block custom_js %}
+<script type="text/javascript">
+    $(document).ready(function() {
+       
+    });
+</script>
+{%endblock custom_js%}

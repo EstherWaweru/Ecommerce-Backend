@@ -24,6 +24,7 @@ urlpatterns = [
     path('accounts/',include('accounts.urls')),
     path('',views.home,name='home'),
     path('demo/',views.demo,name='demo'),
+    path('dashboard/',views.dashboard,name='dashboard'),
 ]
 # urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT) + \
 #     static(settings.STATIC_URL, document_root=settings.STATICFILES_DIRS)
