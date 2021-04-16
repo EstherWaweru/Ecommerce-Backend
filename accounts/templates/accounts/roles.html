@@ -33,14 +33,18 @@
                     {% for group in groups %}
                     <tr>
                         <td>{{ group.id}}</td>
-                        <td>{{ group.name }}</td>
+                        <td>{{ group }}</td>
                         <td>
-                            <a href="{ url 'role_view'  group.id }" class="btn btn-tool ">
-                                <i class="fas fa-eye"></i></td>
-                        <td>
-                            <a href="" class="btn btn-tool">
+                            <a href="#" 
+                            class="btn btn-info btn-tool view_role" >
+                                <i class="fas fa-eye"></i></a>
+                        
+                            <a href="" class="btn btn-primary btn-tool">
                                 <i class="fas fa-edit"></i>
                             </a>
+                            <a href="" class="btn  btn-danger btn-tool">
+                              <i class="fas fa-times"></i>
+                          </a>
                         </td>
                     </tr>
                     {% endfor %}
@@ -48,52 +52,74 @@
                 </tbody>
             </table>
         </div>
-        <div id="modal-div">
-            <div class="modal fade" id="myEdit" role="dialog">
-                <div class="modal-dialog">
-                  <form  class="well contact-form" method="post" action="{% url 'role_view'}">
-                    {% csrf_token %}
-                    <div class="modal-content">
-                      <div class="modal-header">
-                        <button type="button" class="close" data-dismiss="modal">&times;</button>
-                        <h4 class="modal-title">Modal Header</h4>
-                      </div>
-                      <div class="modal-body">
-                        <label for="usr">Name:</label>
-                        <input type="text" class="form-control" required="" name="uss" value="{{ group.name }}" id="uss">
-                        <label for="pwd">Password:</label>
-                        <input  type="password"  class="form-control" required="" value="{{ group.id }}" name="pwd" id="pwd" >
-                      </div>
-                      <div class="modal-footer">
-                        <button  type="submit" class="btn btn-default">Valider</button>
-                        <button  value="" type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-                      </div>
-                    </div>
-                  </form>
-                </div>
-              </div>
-              
-        </div>
+        
+             
 
         <!-- /.card-body -->
 
 
     </div>
 </section>
+<!-- View Modal UI -->
+<div class="modal fade" id="viewModal" role="dialog">
+  <div class="modal-dialog">
+
+    <!-- Modal content-->
+    <div class="modal-content">
+      <div class="modal-header">
+        <h4 class="modal-title"><span id="name_span"></span> Permissions</h4>
+      </div>
+      <div class="modal-body">
+        <div class="container">
+          <ol class="permission_list">
+           
+          </ol>
+          </div>
+        <div class="form-group">
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+      </div>
+    </div>
+
+  </div>
+</div>
 {%endblock main_content%} 
 {% block custom_js %}
 <script type="text/javascript">
+$(document).ready(function() {
+  
+})
+    $(".view_role").click(function(){
+      var group_id=$(this).parents("tr").children("td:eq(0)").text();
+      $('.permission_list').html("");
+      $.ajax({
+        url:"{% url 'role_view_ajax' %}",
+        type:"POST",
+        data:{"group_id":group_id,csrfmiddlewaretoken: '{{ csrf_token }}'},
+        
+        success:function(response){
+          var permissions=response.permissions;
+          var group=response.group;
+          $("#viewModal span").html(group);
+          $.each(permissions,function name(key,value) {
+            console.log(value['name']);
+            $('.permission_list').append('<li>'+value['name']+'</li>');
+          });
+          
+          $("#viewModal").modal("show");
+        },
+        error:function(){
+          alert.log("Something went wrong");
+        },
+      });
+      $("#viewModal").modal("hide");
 
-var modalDiv = $("#modal-div");
+     
+    });
+    
 
-$(".open-modal").on("click", function() {
-  $.ajax({
-    url: $(this).attr("data-url"),
-    success: function(data) {
-      modalDiv.html(data);
-      $("#myEdit").modal();
-    }
-  });
-});
+
 </script>
 {%endblock custom_js%}

@@ -11,6 +11,7 @@ urlpatterns=[
     path('logout/',views.user_logout,name='user_logout'),
     path('roles/',views.roles,name='roles'),
     path('roles/<str:group_id>/',views.role_view,name='role_view'),
+    path('role_view_ajax/',views.role_view_ajax,name='role_view_ajax'),
     path('password_reset/',auth_views.PasswordResetView.as_view(
         template_name='accounts/password_reset_form.html',
         subject_template_name='accounts/password_reset_subject.txt',
