@@ -11,6 +11,7 @@ from django.template.loader import render_to_string
 from django.conf import settings
 from django.core.mail import send_mail
 import traceback
+from django.core import serializers
 from django.contrib.auth.decorators import login_required,permission_required
 from django.contrib import messages
 from django.http import HttpResponse, HttpResponseRedirect
@@ -151,14 +152,32 @@ def dashboard(request):
 @login_required
 def roles(request):
     group_list=Group.objects.all()
-    group_permissions=Permission.objects.all()
+    # group_permissions=Permission.objects.all()
     print("All Groups----------------------")
     print(group_list)
-    context={'groups':group_list,'permissions':group_permissions}
+    context={'groups':group_list}
+    # context={'groups':group_list,'permissions':group_permissions}
     return render(request,'accounts/roles.html',context)
 def role_view(request,group_id):
+    #to do display roles and permissions using ajax
     context={'group_id':group_id}
     return render(request,'accounts/roles.html',context)
+def role_view_ajax(request):
+    if request.method=='POST':
+        group_id=request.POST.get("group_id")
+        group=Group.objects.get(id=group_id)
+        permissions=group.permissions.all()
+        print(list(permissions.values()))
+        data={'group':group.name,'permissions':list(permissions.values())}
+        return JsonResponse(data)
+    else:
+        return render(request,'accounts/roles.html',context)
+
+    # print('************',context)
+    # data['permissions'] = render_to_string('accounts/roles.html', context, request=request)
+   
+
+
 
 
 
