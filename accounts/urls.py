@@ -12,6 +12,7 @@ urlpatterns=[
     path('roles/',views.roles,name='roles'),
     path('roles/<str:group_id>/',views.role_view,name='role_view'),
     path('role_view_ajax/',views.role_view_ajax,name='role_view_ajax'),
+    path('create_group_ajax/',views.create_group_ajax,name="create_group_ajax"),
     path('password_reset/',auth_views.PasswordResetView.as_view(
         template_name='accounts/password_reset_form.html',
         subject_template_name='accounts/password_reset_subject.txt',
