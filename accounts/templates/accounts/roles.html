@@ -13,8 +13,14 @@
 {%block main_content%}
 <section class="content">
     <div class="container-fluid">
-
+        <div class="row">
+          <div class="col-sm-8">
         <p>Role Management</p>
+      </div>
+      <div class="col-sm-4">
+        <a href="#" class="btn btn-info btn-tool  create_role" data-target="#createModal" data-toggle="modal"><i class="fas fa-plus">New Group</i></a>
+      </div>
+      </div>
 
 
  <!-- /.card-header -->
@@ -60,6 +66,45 @@
 
     </div>
 </section>
+<!-- Add New Group Modal -->
+<div class="modal fade" id="createModal" role="dialog">
+  <div class="modal-dialog">
+
+    <!-- Modal content-->
+    <div class="modal-content">
+      <div class="modal-header">
+        <h4 class="modal-title">Add New Group <span id="name_span"></span></h4>
+          <!-- <button type="button" class="close" data-dismiss="modal">&times;</button> -->
+      </div>
+      <div class="modal-body">
+        
+         
+        <div class="form-group">
+          <label for="role_name">Group Name</label> <span id="error_name" class='text-danger ms-3'></span>
+        <input type="text" name="role_name" placeholder="Group Name"class="form-control" required id="role_name">
+      </div>
+      <!-- Optional.Add custom permissions to that group -->
+      <h3>Optional.Add customs permissions for the group below!</h3>
+      <div class="form-group">
+        <label for="permission_name">Permission Name</label><span id="error_permission_name" class='text-danger ms-3'></span>
+        <input type="text" name="permission_name" placeholder="Permission Name"class="form-control " id="permission_name">
+      </div>
+      <div class="form-group">
+        <label for="permission_codename">Permission Codename</label><span id="error_permission_codename" class='text-danger ms-3'></span>
+        <input type="text" name="permission_codename" placeholder="Permission Code Name"class="form-control" id="permission_codename">
+      </div>
+        
+      </div>
+      <div class="modal-footer">
+        <div class="form-group">
+        <button class="btn btn-success  add_group_ajax"  type="button">Submit</button>
+        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+      </div>
+      </div>
+    </div>
+
+  </div>
+</div>
 <!-- View Modal UI -->
 <div class="modal fade" id="viewModal" role="dialog">
   <div class="modal-dialog">
@@ -118,8 +163,87 @@ $(document).ready(function() {
 
      
     });
+    $(".add_group_ajax").click(function(){
+      if($.trim($('#role_name').val()).length==0){
+        error_name="Please enter a group name";
+        $('#error_name').text(error_name);
+      }
+      else{
+        error_name="";
+        $('#error_name').text(error_name);
+
+      }
+      if($.trim($('#permission_codename').val()).length>0 && $.trim($('#permission_name').val()).length==0 ){
+        error_permission_name="Please enter a Permission name";
+        $('#error_permission_name').text(error_permission_name);
+      }
+      else{
+        error_permission_name="";
+        $('#error_permission_name').text(error_permission_name);
+
+      }
+      if($.trim($('#permission_name').val()).length>0 && $.trim($('#permission_codename').val()).length==0){
+        error_permission_codename="Please enter a Permission Code name";
+        $('#error_permission_codename').text(error_permission_codename);
+      }
+      else{
+        error_permission_codename="";
+        $('#error_permission_codename').text(error_permission_codename);
+
+      }
+      if(error_name!=""||(error_permission_codename!="")||error_permission_name!=""){
+        return false;
+      }
+      else{
+        var role_name=$('#role_name').val();
+        var permission_name=$('#permission_name').val();
+        var permission_codename=$('#permission_codename').val();
+        console.log(permission_codename);
+        console.log(permission_name);
+        $.ajax({
+          url:"{% url 'create_group_ajax' %}",
+          method:"POST",
+          data:{csrfmiddlewaretoken: '{{ csrf_token }}','role_name':role_name,
+          'permission_name':permission_name,'permission_codename':permission_codename},
+          success:function(response){
+            $('#createModal').modal('hide');
+            $('#createModal').find('input').val('');
+            location.reload(true);
+            console.log(response.status);
+          },
+          error:function(){
+            $('#createModal').modal('hide');
+            $('#createModal').find('input').val('');
+            location.reload(true);
+            console.log("Something went wrong!");
+          },
+
+        });
+      }
+      
+
+    });
     
 
 
 </script>
+{% if messages %} {% for message in messages %}
+<script type=text/javascript>
+    $(document).ready(function() {
+        
+        toastr.options = {
+
+"progressBar": true,
+"showDuration": "20",
+
+
+};
+
+toastr.{{message.tags}}('{{message}}');
+    
+        
+});
+    
+</script>
+{% endfor %} {% endif %}
 {%endblock custom_js%}

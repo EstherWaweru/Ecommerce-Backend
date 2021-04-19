@@ -20,6 +20,9 @@ from django.contrib.auth import login,authenticate,logout
 import requests
 import json
 from django.http import JsonResponse
+from django.contrib.contenttypes.models import ContentType
+
+
 
 
 
@@ -167,14 +170,36 @@ def role_view_ajax(request):
         group_id=request.POST.get("group_id")
         group=Group.objects.get(id=group_id)
         permissions=group.permissions.all()
-        print(list(permissions.values()))
+        # print(list(permissions.values()))
         data={'group':group.name,'permissions':list(permissions.values())}
         return JsonResponse(data)
     else:
         return render(request,'accounts/roles.html',context)
+def create_group_ajax(request):
+    if request.method=='POST':
+        group_name=request.POST.get("role_name")
+        permission_name=request.POST.get("permission_name")
+        permission_codename=request.POST.get("permission_codename")
+        #create group 
+        new_group,created=Group.objects.get_or_create(name=group_name)
+         #create permission
+        if len(permission_name)>0 and len(permission_codename)>0:
+            userct = ContentType.objects.get_for_model(User)
+            created_permission = Permission.objects.create(codename =permission_codename, name =permission_name, content_type = userct)
+            print("**********",created_permission)
+            #associate the permisiion to the group
+            new_group.permissions.add(created_permission)
+        messages.success(request,"Group created successfuly!")
+        data={'status':"Group created successfuly!"}
+        return JsonResponse(data)
+    else:
+        messages.error(request,"Failed to create a Group")
+        return render(request,'accounts/roles.html')
 
-    # print('************',context)
-    # data['permissions'] = render_to_string('accounts/roles.html', context, request=request)
+        
+
+
+    
    
 
 
