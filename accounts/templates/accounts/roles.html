@@ -194,7 +194,7 @@
       </div>
       <div class="modal-footer justify-content-center">
         <button class="btn btn-danger delete_group_ajax"  type="button">Delete</button>
-        <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
       </div>
     </div>
 
@@ -311,7 +311,7 @@ $(document).ready(function() {
           alert(response);
           $("#editRoleModal span").html(response.name);
           $('#group_name').val(response.name);
-          // $("input:text").val("Glenn Quagmire");
+         
           var new_perm=response.permissions
           $.each(response.all_permissions,function name(permkey,permvalue) {
           $.each(response.permissions,function name(key,value) {
