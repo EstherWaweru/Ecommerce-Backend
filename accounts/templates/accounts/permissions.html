@@ -1,0 +1,193 @@
+{% extends "base_copy.html"%} 
+{% block page_title %} Permissions{% endblock page_title %} 
+{%block content_wrapper%}
+<div class="col-sm-6">
+    <ol class="breadcrumb float-sm-right">
+      <li class="breadcrumb-item"><a href="{% url 'dashboard' %}">Dashboard</a></li>
+      <li class="breadcrumb-item"><a href="{% url 'roles' %}">Roles</a></li>
+      <li class="breadcrumb-item active">Permissions</li>
+    </ol>
+  </div>
+{%endblock content_wrapper%}
+
+{%block main_content%}
+<section class="content">
+    <div class="container-fluid">
+
+
+
+        <div class=row>
+            <a href="#" class="btn btn-success " data-target="#createPermissionModal" data-toggle="modal"><span class=""><i class="feather icon-plus"></i> Add New  Permission</span></a>
+            
+            </div>
+            <br>
+            
+            
+        <!-- /.card-header -->
+        <div class="card">
+        <div class="card-body table-responsive ">
+            <table id="permission-table" class="table table-bordered " data-page-length='10'>
+                <thead>
+                    <tr>
+                        <th>S/N</th>
+                        <th>Permission Name</th>
+                        <th>Permission Codename</th>
+                        <th>Action</th>
+                        
+                    </tr>
+                </thead>
+                <tbody>
+
+                    {% for permission in permissions %}
+                    <tr>
+
+                        <td>{{ permission.id}}</td>
+                        <td>{{ permission.name }}</td>
+
+                        <td>{{ permission.codename }}</td>
+                        <td>
+                            <a href="#" class="btn btn-tool btn-secondary">
+                                <i style="color:black"class="fas fa-edit"></i></a>
+                        
+                        
+                            <a href="#" class="btn btn-tool btn-info ">
+                                <i style="color:black"class="fas fa-eye"></i>
+                            </a>
+                        
+                        <a href="#" class="btn btn-tool  btn-danger delete_company" data-toggle="modal" data-target="#myModal"><i style="color:black"class="fas fa-times"></i></a></td>
+                        
+                    </tr>
+                    {% endfor %}
+
+                </tbody>
+            </table>
+        </div>
+        </div>
+        <!-- /.card-body -->
+
+
+    </div>
+</section>
+<!-- Add New Permission -->
+<div class="modal fade" id="createPermissionModal" role="dialog">
+    <div class="modal-dialog">
+
+      <!-- Modal content-->
+    <div class="modal-content">
+        <div class="modal-header">
+          <h4 class="modal-title">Add New Permission </h4>
+            <button type="button" class="close" data-dismiss="modal">&times;</button>
+        </div>
+        <div class="modal-body">
+          
+           
+          
+        <!-- Optional.Add custom permissions to that group -->
+       
+        <div class="form-group">
+          <label for="permission_name">Permission Name</label><span id="error_permission_name" class='text-danger ms-3'></span>
+          <input type="text" name="permission_name" placeholder="Enter a Permission Name"class="form-control " id="permission_name">
+        </div>
+        <div class="form-group">
+          <label for="permission_codename">Permission Codename</label><span id="error_permission_codename" class='text-danger ms-3'></span>
+          <input type="text" name="permission_codename" placeholder="Enter a Permission Code Name"class="form-control" id="permission_codename">
+        </div>
+          
+        </div>
+        <div class="modal-footer justify-content-center">
+          
+          <button class="btn btn-success  add_permission_ajax"  type="button">Submit</button>
+          <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+       
+        </div>
+      </div>
+  
+    </div>
+  </div>
+{% endblock main_content%}
+{% block custom_js%}
+<script>
+      $(document).ready(function() {
+        $('#permission-table').DataTable({
+            "autoWidth": false,
+        });
+        
+        
+        });
+    // add group ajax
+    $(".add_permission_ajax").click(function(){
+      if($.trim($('#role_name').val()).length==0){
+        error_name="Please enter a group name";
+        $('#error_name').text(error_name);
+      }
+      else{
+        error_name="";
+        $('#error_name').text(error_name);
+
+      }
+      if($.trim($('#permission_codename').val()).length>0 && $.trim($('#permission_name').val()).length==0 ){
+        error_permission_name="Please enter a Permission name";
+        $('#error_permission_name').text(error_permission_name);
+      }
+      else{
+        error_permission_name="";
+        $('#error_permission_name').text(error_permission_name);
+
+      }
+      if($.trim($('#permission_name').val()).length>0 && $.trim($('#permission_codename').val()).length==0){
+        error_permission_codename="Please enter a Permission Code name";
+        $('#error_permission_codename').text(error_permission_codename);
+      }
+      else{
+        error_permission_codename="";
+        $('#error_permission_codename').text(error_permission_codename);
+
+      }
+      if(error_name!=""||(error_permission_codename!="")||error_permission_name!=""){
+        return false;
+      }
+      else{
+        var role_name=$('#role_name').val();
+        var permission_name=$('#permission_name').val();
+        var permission_codename=$('#permission_codename').val();
+        console.log(permission_codename);
+        console.log(permission_name);
+        codename=permission_codename.toLowerCase().replace(/\s/g,'_')
+        console.log(codename);
+        $.ajax({
+          url:"{% url 'create_group_ajax' %}",
+          method:"POST",
+          data:{csrfmiddlewaretoken: '{{ csrf_token }}','role_name':role_name,
+          'permission_name':permission_name,'permission_codename':codename},
+          success:function(response){
+            $('#createModal').modal('hide');
+            $('#createModal').find('input').val('');
+            location.reload(true);
+            console.log(response.status);
+          },
+          error:function(){
+            $('#createModal').modal('hide');
+            $('#createModal').find('input').val('');
+            location.reload(true);
+            console.log("Something went wrong!");
+          },
+
+        });
+      }
+      
+
+    });
+</script>
+{% if messages %} {% for message in messages %}
+<script type=text/javascript>
+    $(document).ready(function() {
+        toastr.options = {
+"progressBar": true,
+"showDuration": "20",
+};
+toastr.{{message.tags}}('{{message}}');       
+});
+    
+</script>
+{% endfor %} {% endif %}
+{%endblock custom_js%}

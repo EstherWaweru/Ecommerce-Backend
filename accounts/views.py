@@ -223,6 +223,13 @@ def delete_group_ajax(request):
     except:
         messages.error(request,"Failed to Delete Group ")
         return HttpResponse("False")
+def permissions_list(request):
+    permissions=Permission.objects.all().values('name','id','codename')
+    print(permissions)
+    context={'permissions':permissions}
+    return render(request,'accounts/permissions.html',context)
+def add_permission(request):
+    pass
         
 
 
