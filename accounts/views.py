@@ -21,6 +21,7 @@ import requests
 import json
 from django.http import JsonResponse
 from django.contrib.contenttypes.models import ContentType
+from django.forms.models import model_to_dict
 
 
 
@@ -155,11 +156,7 @@ def dashboard(request):
 @login_required
 def roles(request):
     group_list=Group.objects.all()
-    # group_permissions=Permission.objects.all()
-    print("All Groups----------------------")
-    print(group_list)
     context={'groups':group_list}
-    # context={'groups':group_list,'permissions':group_permissions}
     return render(request,'accounts/roles.html',context)
 def role_view(request,group_id):
     #to do display roles and permissions using ajax
@@ -170,6 +167,7 @@ def role_view_ajax(request):
         group_id=request.POST.get("group_id")
         group=Group.objects.get(id=group_id)
         permissions=group.permissions.all()
+        # print(permissions)
         # print(list(permissions.values()))
         data={'group':group.name,'permissions':list(permissions.values())}
         return JsonResponse(data)
@@ -186,7 +184,7 @@ def create_group_ajax(request):
         if len(permission_name)>0 and len(permission_codename)>0:
             userct = ContentType.objects.get_for_model(User)
             created_permission = Permission.objects.create(codename =permission_codename, name =permission_name, content_type = userct)
-            print("**********",created_permission)
+            # print("**********",created_permission)
             #associate the permisiion to the group
             new_group.permissions.add(created_permission)
         messages.success(request,"Group created successfuly!")
@@ -196,6 +194,35 @@ def create_group_ajax(request):
         messages.error(request,"Failed to create a Group")
         return render(request,'accounts/roles.html')
 
+def edit_group_ajax(request):
+    if request.method=='POST':
+        group_id=request.POST.get('group_id')
+        group=Group.objects.get(id=group_id)
+        all_permissions=Permission.objects.all()
+        serialized_obj = serializers.serialize('json', [ group, ])
+        struct = json.loads(serialized_obj)
+        data1 = json.dumps(struct[0])
+        dict_obj = model_to_dict( group )
+        perm=dict_obj.pop('permissions')
+        new_data=serializers.serialize('json', perm,fields=('name','content_type'))
+        dict_obj['permissions']=json.loads(new_data)
+        dict_obj['all_permissions']=list(all_permissions.values())
+        # print(dict_obj)
+        # messages.success(request,"Edit group successful!")
+        return JsonResponse(dict_obj)
+    else:
+        messages.error(request,"Edit group Failed")
+        return render(request,"accounts/roles.html")
+def delete_group_ajax(request):
+    try:
+        id=request.POST.get("id")
+        group=Group.objects.get(id=id)
+        group.delete()
+        messages.success(request,"Successfully Deleted Group")
+        return JsonResponse({'status':"Successfuly Deleted a Group"})
+    except:
+        messages.error(request,"Failed to Delete Group ")
+        return HttpResponse("False")
         
 
 

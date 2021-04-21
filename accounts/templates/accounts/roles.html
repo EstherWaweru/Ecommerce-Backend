@@ -45,10 +45,10 @@
                             class="btn btn-info btn-tool view_role" >
                                 <i class="fas fa-eye"></i></a>
                         
-                            <a href="" class="btn btn-primary btn-tool">
+                            <a href="" class="btn btn-primary btn-tool edit_role" data-target="#editRoleModal" data-toggle="modal">
                                 <i class="fas fa-edit"></i>
                             </a>
-                            <a href="" class="btn  btn-danger btn-tool">
+                            <a href="" class="btn  btn-danger btn-tool delete_role" data-toggle="modal" data-target="#deleteModal">
                               <i class="fas fa-times"></i>
                           </a>
                         </td>
@@ -66,6 +66,45 @@
 
     </div>
 </section>
+<!-- Edit  Group Modal -->
+<div class="modal fade" id="editRoleModal" role="dialog">
+  <div class="modal-dialog">
+
+    <!-- Modal content-->
+    <div class="modal-content">
+      <div class="modal-header">
+        <h4 class="modal-title">Edit  <span ></span></h4>
+          <button type="button" class="close" data-dismiss="modal">&times;</button>
+      </div>
+      <div class="modal-body">
+        
+         
+        <div class="form-group">
+          <label for="group_name">Group Name</label> <span id="error_name" class='text-danger ms-3'></span>
+        <input type="text" name="group_name" placeholder="Group Name"class="form-control" required  id="group_name">
+      </div>
+      <!-- Optional.Add custom permissions to that group -->
+      <h3>Optional.Add customs permissions for the group below!</h3>
+      <!-- Remove Permission -->
+      <ol class="group_perm">
+      <!-- <li><input type="checkbox" class="record" name="checked[]" value="{{ permission_name }}"/></li> -->
+    </ol>
+      <!-- All permissions to associate -->
+      <ol class="all_perm">
+        <!-- <li><input type="checkbox" class="record" name="checked[]" value="{{ permission_name }}"/></li> -->
+      </ol>
+        
+      </div>
+      <div class="modal-footer">
+        <div class="form-group">
+        <button class="btn btn-success  "  type="button">Submit</button>
+        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+      </div>
+      </div>
+    </div>
+
+  </div>
+</div>
 <!-- Add New Group Modal -->
 <div class="modal fade" id="createModal" role="dialog">
   <div class="modal-dialog">
@@ -130,6 +169,37 @@
 
   </div>
 </div>
+<!-- Delete group -->
+<div class="modal fade" id="deleteModal" role="dialog">
+  <div class="modal-dialog modal-confirm">
+
+    <!-- Modal content-->
+    <div class="modal-content">
+      
+       
+      <div class="modal-header justify-content-center">
+        <h4 class="modal-title">Delete <span id="name_span1"></span> Role?</h4>
+          <button type="button" class="close" data-dismiss="modal">&times;</button>
+      </div>
+      <div class="modal-body">
+        
+          <div class="alert justify-content-center">
+              <h6>Are you sure you want to delete <span id="name_span2"></span> Role?</h6>
+              <h6 >All contents attached to this record will be deleted!</h6>
+              <h6>This action cannot be undone</h6>
+          
+           <input type="hidden" name="group_id" class="form-control" id="group_id">
+        </div>
+        
+      </div>
+      <div class="modal-footer justify-content-center">
+        <button class="btn btn-danger delete_group_ajax"  type="button">Delete</button>
+        <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
+      </div>
+    </div>
+
+  </div>
+</div>
 {%endblock main_content%} 
 {% block custom_js %}
 <script type="text/javascript">
@@ -147,6 +217,7 @@ $(document).ready(function() {
         success:function(response){
           var permissions=response.permissions;
           var group=response.group;
+          console.log(response)
           $("#viewModal span").html(group);
           $.each(permissions,function name(key,value) {
             console.log(value['name']);
@@ -200,11 +271,13 @@ $(document).ready(function() {
         var permission_codename=$('#permission_codename').val();
         console.log(permission_codename);
         console.log(permission_name);
+        codename=permission_codename.toLowerCase().replace(/\s/g,'_')
+        console.log(codename);
         $.ajax({
           url:"{% url 'create_group_ajax' %}",
           method:"POST",
           data:{csrfmiddlewaretoken: '{{ csrf_token }}','role_name':role_name,
-          'permission_name':permission_name,'permission_codename':permission_codename},
+          'permission_name':permission_name,'permission_codename':codename},
           success:function(response){
             $('#createModal').modal('hide');
             $('#createModal').find('input').val('');
@@ -222,6 +295,86 @@ $(document).ready(function() {
       }
       
 
+    });
+    // edit_group ajax
+    $(".edit_role").click(function(){
+      var role_id=$(this).parents("tr").children("td:eq(0)").text();
+      $('.group_perm').html("");
+      $.ajax({
+        url:'{% url "edit_group_ajax"%}',
+        data:{'group_id':role_id,csrfmiddlewaretoken:'{{csrf_token}}'},
+        method:"POST",
+        success:function(response){
+          console.log(response);
+          console.log(response.permissions);
+          console.log(response.name);
+          alert(response);
+          $("#editRoleModal span").html(response.name);
+          $('#group_name').val(response.name);
+          // $("input:text").val("Glenn Quagmire");
+          var new_perm=response.permissions
+          $.each(response.all_permissions,function name(permkey,permvalue) {
+          $.each(response.permissions,function name(key,value) {
+           
+            
+            console.log(value['name']);
+            // $('.group_perm').append('<li>'+value['name']+'</li>');
+            if(value['pk']==permvalue['id']){
+            $('.group_perm').append('<li>\
+              <input checked type="checkbox"\
+              id=perm'+value['pk']+'\
+              value='+value['pk']+'>'
+              +value['fields']['name']+'</li>');
+              return false;
+              }
+            
+            else{
+              $('.group_perm').append('<li>\
+              <input  type="checkbox"\
+              id=perm'+permvalue['id']+'\
+              value='+permvalue['id']+'>'
+              +permvalue['name']+'</li>');
+              return false;
+
+            }
+
+            });
+            
+              
+          });
+         
+          
+          $("#editRoleModal").modal("show");
+
+        },
+        error:function(){},
+      });
+
+
+    });
+    $(".delete_role").click(function(){
+     var group_id=$(this).parents("tr").children("td:eq(0)").text();
+     var group_name=$(this).parents("tr").children("td:eq(1)").text();
+      $("#group_id").val(group_id);
+      $("#name_span1").text(group_name);
+      $("#name_span2").text(group_name);
+      
+    });
+    $('.delete_group_ajax').click(function(){
+      var id=$("#group_id").val();
+      $("#deleteModal").modal('hide');
+      $.ajax({
+        url:"{% url 'delete_group_ajax' %}",
+        type:'POST',
+        data:{'id':id,csrfmiddlewaretoken:'{{csrf_token}}'},
+        success:function(response){
+          console.log(response)
+          location.reload(true);
+        },
+        error:function(){
+          location.reload(true);
+        },
+      })
     });
     
 
