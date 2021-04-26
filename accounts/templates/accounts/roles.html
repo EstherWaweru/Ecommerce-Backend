@@ -307,38 +307,43 @@ $(document).ready(function() {
         success:function(response){
           console.log(response);
           console.log(response.permissions);
+          console.log(response.all_permissions);
           console.log(response.name);
+          let arr=['']
+          $.each(response.permissions,function name(key,value) {
+            arr.push(value['pk']);
+          });
+          console.log(arr);
+          
+          console.log(response.permissions.pk)
           alert(response);
           $("#editRoleModal span").html(response.name);
           $('#group_name').val(response.name);
          
           var new_perm=response.permissions
           $.each(response.all_permissions,function name(permkey,permvalue) {
-          $.each(response.permissions,function name(key,value) {
-           
-            
-            console.log(value['name']);
-            // $('.group_perm').append('<li>'+value['name']+'</li>');
-            if(value['pk']==permvalue['id']){
-            $('.group_perm').append('<li>\
+              if (arr.indexOf(permvalue['id'])> 0) {
+              console.log("****",permvalue['name']);
+              console.log("alert")
+              $('.group_perm').append('<li>\
               <input checked type="checkbox"\
-              id=perm'+value['pk']+'\
-              value='+value['pk']+'>'
-              +value['fields']['name']+'</li>');
-              return false;
-              }
+              id=perm'+permvalue['id']+'\
+              value='+permvalue['id']+'>'
+              +permvalue['name']+'</li>');
+              
             
+              }
+              
             else{
               $('.group_perm').append('<li>\
               <input  type="checkbox"\
               id=perm'+permvalue['id']+'\
               value='+permvalue['id']+'>'
               +permvalue['name']+'</li>');
-              return false;
+             
 
             }
-
-            });
+            
             
               
           });

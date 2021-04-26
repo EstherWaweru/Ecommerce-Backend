@@ -204,7 +204,7 @@ def edit_group_ajax(request):
         data1 = json.dumps(struct[0])
         dict_obj = model_to_dict( group )
         perm=dict_obj.pop('permissions')
-        new_data=serializers.serialize('json', perm,fields=('name','content_type'))
+        new_data=serializers.serialize('json', perm,fields=('name','codename'))
         dict_obj['permissions']=json.loads(new_data)
         dict_obj['all_permissions']=list(all_permissions.values())
         # print(dict_obj)
