@@ -18,7 +18,7 @@
         <p>Role Management</p>
       </div>
       <div class="col-sm-4">
-        <a href="#" class="btn btn-info btn-tool  create_role" data-target="#createModal" data-toggle="modal"><i class="fas fa-plus">New Group</i></a>
+        <a href="#" class="btn btn-info btn-tool  create_role" ><i class="fas fa-plus">New Group</i></a>
       </div>
       </div>
 
@@ -131,6 +131,12 @@
         <label for="permission_codename">Permission Codename</label><span id="error_permission_codename" class='text-danger ms-3'></span>
         <input type="text" name="permission_codename" placeholder="Permission Code Name"class="form-control" id="permission_codename">
       </div>
+      <h3>Optional.Add customs permissions for the group below!</h3>
+      <!-- Remove Permission -->
+      <ol class="all_perm">
+     
+    </ol>
+    <input type="hidden" name="role_id" class="form-control" id="role_id">
         
       </div>
       <div class="modal-footer">
@@ -373,8 +379,7 @@ $(document).ready(function() {
            $.ajax({
             url:"{% url 'ajax_edit_role' %}",
             type:"POST",
-           
-            data:{csrfmiddlewaretoken:'{{csrf_token}}',arrId:arrId,arrValue:arrValue,role_id:id,demo:[1,2,3]},
+            data:{csrfmiddlewaretoken:'{{csrf_token}}',arrValue:arrValue,role_id:id,},
             dataType: 'JSON',
             success:function(response){
               console.log(response.status);
@@ -385,6 +390,26 @@ $(document).ready(function() {
               location.reload(true);
             },
            });
+    });
+    $(".create_role").click(function(){
+     $('.all_perm').html("");
+      $.ajax({
+        url:"{% url 'create_role' %}",
+        type:"GET",
+        success:function(response){
+          $.each(response.all_permissions,function name(permkey,permvalue) {
+              $('.all_perm').append('<li>\
+              <input  type="checkbox"\
+              id=perm'+permvalue['id']+'\
+              value='+permvalue['id']+'>'
+              +permvalue['name']+'</li>');
+            });
+              $("#createModal").modal("show");
+        },
+        error:function(){
+          alert.log("Something went wrong");
+        },
+      });
     });
     
 
