@@ -46,7 +46,7 @@
 
                         <td>{{ permission.codename }}</td>
                         <td>
-                            <a href="#" class="btn btn-tool btn-secondary">
+                            <a href="#" class="btn btn-tool btn-secondary edit_permission">
                                 <i style="color:black"class="fas fa-edit"></i></a>
                         
                         
@@ -121,6 +121,38 @@
         <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
       </div>
     </div>
+  </div>
+</div>
+<!-- Edit  Group Modal -->
+<div class="modal fade" id="editPermissionModal" role="dialog">
+  <div class="modal-dialog">
+
+    <!-- Modal content-->
+    <div class="modal-content">
+      <div class="modal-header">
+        <h4 class="modal-title">Edit  <span id="edit_perm_name"></span></h4>
+          <button type="button" class="close" data-dismiss="modal">&times;</button>
+      </div>
+      <div class="modal-body">
+        <div class="form-group">
+          <label for="edit_permission_name">Permission Name</label><span id="edit_error_permission_name" class='text-danger ms-3'></span>
+          <input type="text" name="edit_permission_name" placeholder="Enter a Permission Name"class="form-control " id="edit_permission_name" required>
+        </div>
+        <div class="form-group">
+          <label for="edit_permission_codename">Permission Codename</label><span id="edit_error_permission_codename" class='text-danger ms-3'></span>
+          <input type="text" name="edit_permission_codename" placeholder="Enter a Permission Code Name"class="form-control" id="edit_permission_codename" required>
+        </div>
+     
+    <input type="hidden" name="perm_id" class="form-control" id="perm_id"> 
+      </div>
+      <div class="modal-footer justify-content-center">
+        <div class="form-group ">
+        <button class="btn btn-success edit_permission_ajax "  type="button">Submit</button>
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+      </div>
+      </div>
+    </div>
+
   </div>
 </div>
 {% endblock main_content%}
@@ -201,6 +233,69 @@
           location.reload(true);
         },
       })
+    });
+    $(".edit_permission").click(function(){
+      var permission_id=$(this).parents("tr").children("td:eq(0)").text();
+      
+      $.ajax({
+        url:"{% url 'edit_permission' %}",
+        type:"POST",
+        data:{'permission_id':permission_id,csrfmiddlewaretoken:'{{csrf_token}}'},
+        success:function(response){
+          console.log(response);
+          $("#edit_perm_name").html(response.name);
+          $('#edit_permission_codename').val(response.codename);
+          $('#edit_permission_name').val(response.name);
+          $("#perm_id").val(permission_id);
+          $("#editPermissionModal").modal("show");
+        },
+        error:function(){
+          alert("Something went wrong");
+        },
+      });
+    });
+    $('.edit_permission_ajax').click(function(){
+      var id=$("#perm_id").val();
+      console.log(id);
+      if( $.trim($('#edit_permission_name').val()).length==0 ){
+        error_permission_name="Please enter a Permission name";
+        $('#edit_error_permission_name').text(error_permission_name);
+      }
+      else{
+        error_permission_name="";
+        $('#edit_error_permission_name').text(error_permission_name);
+
+      }
+      if( $.trim($('#edit_permission_codename').val()).length==0){
+        error_permission_codename="Please enter a Permission Code name";
+        $('#edit_error_permission_codename').text(error_permission_codename);
+      }
+      else{
+        error_permission_codename="";
+        $('#edit_error_permission_codename').text(error_permission_codename);
+
+      }
+      if((error_permission_codename!="")||error_permission_name!=""){
+        return false;
+      }
+      else{
+      var perm_name=$("#edit_permission_name").val();
+      var perm_codename=$("#edit_permission_codename").val();
+      perm_codename=perm_codename.toLowerCase().replace(/\s/g,'_')
+           $.ajax({
+            url:"{% url 'edit_permission_ajax' %}",
+            method:"POST",
+            data:{csrfmiddlewaretoken:'{{csrf_token}}','perm_name':perm_name,'perm_id':id,'perm_codename':perm_codename},
+            dataType: 'JSON',
+            success:function(response){
+              console.log(response.status);
+              location.reload(true);
+            },
+            error:function(){
+              alert("Something went wrong!");
+              location.reload(true);
+            },
+           });}
     });
 </script>
 {% if messages %} {% for message in messages %}

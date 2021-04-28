@@ -273,6 +273,30 @@ def delete_permission_ajax(request):
     except:
         messages.error(request,"Failed to Delete A Permission ")
         return HttpResponse("False")
+def edit_permission(request):
+    try:
+        perm_id=request.POST.get('permission_id')
+        permission=Permission.objects.get(id=perm_id)
+        data={'name':permission.name,'codename':permission.codename,'id':permission.id}
+        return JsonResponse(data)
+    except:
+        return render(request,"accounts/permissions.html")
+def edit_permission_ajax(request):
+    try:
+        perm_id=request.POST.get('perm_id')
+        perm_name=request.POST.get('perm_name')
+        perm_codename=request.POST.get('perm_codename')
+        permission = Permission.objects.get(id=perm_id)
+        permission.name=perm_name
+        permission.codename=perm_codename
+        permission.save()
+        data={'status':'Edit Permission Details Successful!'}
+        return JsonResponse(data)
+    except:
+        return render(request,'accounts/permissions.html')
+
+    
+
 
         
 
