@@ -106,10 +106,7 @@ def user_login(request):
                 email=form.cleaned_data['email']
                 password=form.cleaned_data['password']
                 remember_me=form.cleaned_data['remember_me']
-                # try:
                 user=authenticate(email=email,password=password)
-                # except Exception as e:
-                #     traceback.print_exc()
                 if user!=None:
                     login(request,user)
                     if not remember_me:
@@ -144,7 +141,6 @@ def recaptcha_validation(request):
     'response':recaptcha_response}
     r = requests.post('https://www.google.com/recaptcha/api/siteverify', data=data)
     result=r.json()
-    print(result)
     return result
 @login_required
 def dashboard(request):
@@ -167,8 +163,6 @@ def role_view_ajax(request):
         group_id=request.POST.get("group_id")
         group=Group.objects.get(id=group_id)
         permissions=group.permissions.all()
-        # print(permissions)
-        # print(list(permissions.values()))
         data={'group':group.name,'permissions':list(permissions.values())}
         return JsonResponse(data)
     else:
@@ -178,17 +172,7 @@ def create_group_ajax(request):
         group_name=request.POST.get("role_name")
         perms=request.POST.getlist('perms[]')
         permissions_ids=[int(id) for id in perms]
-        # permission_name=request.POST.get("permission_name")
-        # permission_codename=request.POST.get("permission_codename")
-        #create group 
         new_group,created=Group.objects.get_or_create(name=group_name)
-         #create permission
-        # if len(permission_name)>0 and len(permission_codename)>0:
-        #     userct = ContentType.objects.get_for_model(User)
-        #     created_permission = Permission.objects.create(codename =permission_codename, name =permission_name, content_type = userct)
-        #     # print("**********",created_permission)
-        #     #associate the permisiion to the group
-        #     new_group.permissions.add(created_permission)
         permission_list=[]
         for id in permissions_ids:
             permission=Permission.objects.get(id=id)
@@ -214,11 +198,8 @@ def edit_group_ajax(request):
         new_data=serializers.serialize('json', perm,fields=('name','codename'))
         dict_obj['permissions']=json.loads(new_data)
         dict_obj['all_permissions']=list(all_permissions.values())
-        # print(dict_obj)
-        # messages.success(request,"Edit group successful!")
         return JsonResponse(dict_obj)
     else:
-        # messages.error(request,"Edit group Failed")
         return render(request,"accounts/roles.html")
 def ajax_edit_role(request):
     if request.method=='POST':
@@ -267,11 +248,21 @@ def delete_group_ajax(request):
         return HttpResponse("False")
 def permissions_list(request):
     permissions=Permission.objects.all().values('name','id','codename')
-    print(permissions)
     context={'permissions':permissions}
     return render(request,'accounts/permissions.html',context)
 def add_permission(request):
-    pass
+    if request.method=='POST':
+        permission_name=request.POST.get("permission_name")
+        permission_codename=request.POST.get("permission_codename")
+        if len(permission_name)>0 and len(permission_codename)>0:
+            userct = ContentType.objects.get_for_model(User)
+            created_permission = Permission.objects.create(codename =permission_codename, name =permission_name, content_type = userct)
+        messages.success(request,"Permissions created successfuly!")
+        data={'status':"Permissions created successfuly!"}
+        return JsonResponse(data)
+    else:
+        messages.error(request,"Failed to create a Permmissions")
+        return render(request,'accounts/permissions.html')
         
 
 
