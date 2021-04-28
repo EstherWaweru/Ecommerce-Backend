@@ -238,9 +238,14 @@ def ajax_edit_role(request):
         return JsonResponse({'status':'Success Roles Update!'})
     else:
         return render(request,'accounts/roles.html')
-           
-
-        
+def create_role(request):
+    if request.method=='GET':
+        all_permissions=Permission.objects.all()
+        data={'all_permissions':list(all_permissions.values())}
+        messages.success(request,"Create group successful!")
+        return JsonResponse(data)
+    else:
+        return render(request,"accounts/roles.html")        
 def delete_group_ajax(request):
     try:
         id=request.POST.get("id")
