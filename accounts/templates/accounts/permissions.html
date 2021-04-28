@@ -54,7 +54,7 @@
                                 <i style="color:black"class="fas fa-eye"></i>
                             </a>
                         
-                        <a href="#" class="btn btn-tool  btn-danger delete_company" data-toggle="modal" data-target="#myModal"><i style="color:black"class="fas fa-times"></i></a></td>
+                        <a href="#" class="btn btn-tool  btn-danger delete_permission" data-toggle="modal" data-target="#deletePermissionModal"><i style="color:black"class="fas fa-times"></i></a></td>
                         
                     </tr>
                     {% endfor %}
@@ -99,6 +99,30 @@
   
     </div>
   </div>
+  <!-- Delete permissions  -->
+<div class="modal fade" id="deletePermissionModal" role="dialog">
+  <div class="modal-dialog modal-confirm">
+ <!-- Modal content-->
+    <div class="modal-content">
+       <div class="modal-header justify-content-center">
+        <h4 class="modal-title">Delete this Permission</h4>
+          <button type="button" class="close" data-dismiss="modal">&times;</button>
+      </div>
+      <div class="modal-body">
+         <div class="alert justify-content-center">
+              <h6>Are you sure you want to delete <span id="perm_span"></span>  Permission</h6>
+              <h6 >All contents attached to this record will be deleted!</h6>
+              <h6>This action cannot be undone</h6>
+          <input type="hidden" name="permission_id" class="form-control" id="permission_id">
+        </div>   
+      </div>
+      <div class="modal-footer justify-content-center">
+        <button class="btn btn-danger delete_permission_ajax"  type="button">Delete</button>
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+      </div>
+    </div>
+  </div>
+</div>
 {% endblock main_content%}
 {% block custom_js%}
 <script>
@@ -155,6 +179,28 @@
 
         });
       }
+    });
+    $(".delete_permission").click(function(){
+     var permission_id=$(this).parents("tr").children("td:eq(0)").text();
+     var permission_name=$(this).parents("tr").children("td:eq(1)").text();
+      $("#permission_id").val(permission_id);
+      $("#perm_span").text(permission_name);  
+    });
+    $('.delete_permission_ajax').click(function(){
+      var id=$("#permission_id").val();
+      $("#deletePermissionModal").modal('hide');
+      $.ajax({
+        url:"{% url 'delete_permission_ajax' %}",
+        type:'POST',
+        data:{'id':id,csrfmiddlewaretoken:'{{csrf_token}}'},
+        success:function(response){
+          console.log(response)
+          location.reload(true);
+        },
+        error:function(){
+          location.reload(true);
+        },
+      })
     });
 </script>
 {% if messages %} {% for message in messages %}

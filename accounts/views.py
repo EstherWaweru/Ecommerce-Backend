@@ -263,6 +263,17 @@ def add_permission(request):
     else:
         messages.error(request,"Failed to create a Permmissions")
         return render(request,'accounts/permissions.html')
+def delete_permission_ajax(request):
+    try:
+        id=request.POST.get("id")
+        permission=Permission.objects.get(id=id)
+        permission.delete()
+        messages.success(request,"Successfully Deleted Permission")
+        return JsonResponse({'status':"Successfuly Deleted a Permission"})
+    except:
+        messages.error(request,"Failed to Delete A Permission ")
+        return HttpResponse("False")
+
         
 
 
