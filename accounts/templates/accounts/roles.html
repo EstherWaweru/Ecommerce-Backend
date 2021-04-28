@@ -45,10 +45,10 @@
                             class="btn btn-info btn-tool view_role" >
                                 <i class="fas fa-eye"></i></a>
                         
-                            <a href="" class="btn btn-primary btn-tool edit_role" data-target="#editRoleModal" data-toggle="modal">
+                            <a href="#" class="btn btn-primary btn-tool edit_role" >
                                 <i class="fas fa-edit"></i>
                             </a>
-                            <a href="" class="btn  btn-danger btn-tool delete_role" data-toggle="modal" data-target="#deleteModal">
+                            <a href="#" class="btn  btn-danger btn-tool delete_role" data-toggle="modal" data-target="#deleteModal">
                               <i class="fas fa-times"></i>
                           </a>
                         </td>
@@ -73,7 +73,7 @@
     <!-- Modal content-->
     <div class="modal-content">
       <div class="modal-header">
-        <h4 class="modal-title">Edit  <span ></span></h4>
+        <h4 class="modal-title">Edit  <span id="edit_group_name"></span></h4>
           <button type="button" class="close" data-dismiss="modal">&times;</button>
       </div>
       <div class="modal-body">
@@ -87,17 +87,16 @@
       <h3>Optional.Add customs permissions for the group below!</h3>
       <!-- Remove Permission -->
       <ol class="group_perm">
-      <!-- <li><input type="checkbox" class="record" name="checked[]" value="{{ permission_name }}"/></li> -->
+     
     </ol>
-      <!-- All permissions to associate -->
-      <ol class="all_perm">
-        <!-- <li><input type="checkbox" class="record" name="checked[]" value="{{ permission_name }}"/></li> -->
-      </ol>
+    <input type="hidden" name="roles_id" class="form-control" id="roles_id">
+      
+     
         
       </div>
       <div class="modal-footer">
         <div class="form-group">
-        <button class="btn btn-success  "  type="button">Submit</button>
+        <button class="btn btn-success edit_role_ajax "  type="button">Submit</button>
         <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
       </div>
       </div>
@@ -152,6 +151,7 @@
     <div class="modal-content">
       <div class="modal-header">
         <h4 class="modal-title"><span id="name_span"></span> Permissions</h4>
+        <button type="button" class="close" data-dismiss="modal">&times;</button>
       </div>
       <div class="modal-body">
         <div class="container">
@@ -159,8 +159,7 @@
            
           </ol>
           </div>
-        <div class="form-group">
-        </div>
+        
       </div>
       <div class="modal-footer">
         <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
@@ -231,8 +230,6 @@ $(document).ready(function() {
         },
       });
       $("#viewModal").modal("hide");
-
-     
     });
     $(".add_group_ajax").click(function(){
       if($.trim($('#role_name').val()).length==0){
@@ -301,61 +298,40 @@ $(document).ready(function() {
       var role_id=$(this).parents("tr").children("td:eq(0)").text();
       $('.group_perm').html("");
       $.ajax({
-        url:'{% url "edit_group_ajax"%}',
+        url:"{% url 'edit_group_ajax' %}",
+        type:"POST",
         data:{'group_id':role_id,csrfmiddlewaretoken:'{{csrf_token}}'},
-        method:"POST",
         success:function(response){
           console.log(response);
-          console.log(response.permissions);
-          console.log(response.all_permissions);
-          console.log(response.name);
           let arr=['']
           $.each(response.permissions,function name(key,value) {
             arr.push(value['pk']);
           });
-          console.log(arr);
-          
-          console.log(response.permissions.pk)
-          alert(response);
-          $("#editRoleModal span").html(response.name);
+          $("#edit_group_name").html(response.name);
           $('#group_name').val(response.name);
-         
-          var new_perm=response.permissions
+          $("#roles_id").val(role_id);
+
           $.each(response.all_permissions,function name(permkey,permvalue) {
               if (arr.indexOf(permvalue['id'])> 0) {
-              console.log("****",permvalue['name']);
-              console.log("alert")
-              $('.group_perm').append('<li>\
+             $('.group_perm').append('<li>\
               <input checked type="checkbox"\
               id=perm'+permvalue['id']+'\
               value='+permvalue['id']+'>'
-              +permvalue['name']+'</li>');
-              
-            
-              }
-              
-            else{
+              +permvalue['name']+'</li>');}
+              else{
               $('.group_perm').append('<li>\
-              <input  type="checkbox"\
+              <input type="checkbox"\
               id=perm'+permvalue['id']+'\
               value='+permvalue['id']+'>'
               +permvalue['name']+'</li>');
-             
-
-            }
-            
-            
-              
+            }    
           });
-         
-          
           $("#editRoleModal").modal("show");
-
         },
-        error:function(){},
+        error:function(){
+          alert.log("Something went wrong");
+        },
       });
-
-
     });
     $(".delete_role").click(function(){
      var group_id=$(this).parents("tr").children("td:eq(0)").text();
@@ -380,6 +356,35 @@ $(document).ready(function() {
           location.reload(true);
         },
       })
+    });
+    $('.edit_role_ajax').click(function(){
+      var id=$("#roles_id").val();
+      var arrId = [];
+      let arrValue=[];
+            $('.group_perm :checkbox:checked').each(function(){
+                 var id = $(this).attr('id');
+                 var value= $(this).attr('value');
+                 arrId.push(id);
+                 arrValue.push(value)
+            });
+            console.log(id);
+            console.log(arrId);
+            console.log(arrValue);
+           $.ajax({
+            url:"{% url 'ajax_edit_role' %}",
+            type:"POST",
+           
+            data:{csrfmiddlewaretoken:'{{csrf_token}}',arrId:arrId,arrValue:arrValue,role_id:id,demo:[1,2,3]},
+            dataType: 'JSON',
+            success:function(response){
+              console.log(response.status);
+              location.reload(true);
+            },
+            error:function(){
+              alert("Something went wrong!");
+              location.reload(true);
+            },
+           });
     });
     
 
