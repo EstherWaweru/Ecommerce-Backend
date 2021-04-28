@@ -22,7 +22,7 @@ import json
 from django.http import JsonResponse
 from django.contrib.contenttypes.models import ContentType
 from django.forms.models import model_to_dict
-
+from django.db.models import Count
 
 
 
@@ -211,8 +211,36 @@ def edit_group_ajax(request):
         # messages.success(request,"Edit group successful!")
         return JsonResponse(dict_obj)
     else:
-        messages.error(request,"Edit group Failed")
+        # messages.error(request,"Edit group Failed")
         return render(request,"accounts/roles.html")
+def ajax_edit_role(request):
+    if request.method=='POST':
+        group_id=request.POST.get("role_id")
+        ids_values=request.POST.getlist("arrValue[]")
+        ids_count=len(ids_values)
+        group=Group.objects.get(id=group_id)
+        all_permissions_count=Permission.objects.all().count()
+        all_permissions=Permission.objects.all()
+        permission_ids= [int(id) for id in ids_values]
+        if ids_count==all_permissions_count:
+            group.permissions.clear()
+            group.permissions.set(list(set(all_permissions)))
+        elif ids_count==0:
+            group.permissions.clear()
+        else:
+            group.permissions.clear()
+            permission_list=[]
+            for perm in permission_ids:
+                permission=Permission.objects.get(id=perm)
+                permission_list.append(permission)
+            group.permissions.set(permission_list)
+        messages.success(request,"Succesfuly Edited")
+        return JsonResponse({'status':'Success Roles Update!'})
+    else:
+        return render(request,'accounts/roles.html')
+           
+
+        
 def delete_group_ajax(request):
     try:
         id=request.POST.get("id")

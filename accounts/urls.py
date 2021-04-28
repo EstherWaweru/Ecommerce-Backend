@@ -14,6 +14,7 @@ urlpatterns=[
     path('role_view_ajax/',views.role_view_ajax,name='role_view_ajax'),
     path('create_group_ajax/',views.create_group_ajax,name="create_group_ajax"),
     path('edit_group_ajax/',views.edit_group_ajax,name="edit_group_ajax"),
+    path('ajax_edit_role/',views.ajax_edit_role,name="ajax_edit_role"),
     path('delete_group_ajax/',views.delete_group_ajax,name="delete_group_ajax"),
     path('add_permission/',views.add_permission,name="add_permission"),
     path('permissions/',views.permissions_list,name="permissions_list"),
