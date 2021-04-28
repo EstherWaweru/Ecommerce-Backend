@@ -84,7 +84,7 @@
         <input type="text" name="group_name" placeholder="Group Name"class="form-control" required  id="group_name">
       </div>
       <!-- Optional.Add custom permissions to that group -->
-      <h3>Optional.Add customs permissions for the group below!</h3>
+      <h3>Optional.Add permissions for the group below!</h3>
       <!-- Remove Permission -->
       <ol class="group_perm">
      
@@ -122,7 +122,7 @@
         <input type="text" name="role_name" placeholder="Group Name"class="form-control" required id="role_name">
       </div>
       <!-- Optional.Add custom permissions to that group -->
-      <h3>Optional.Add customs permissions for the group below!</h3>
+      <!-- <h3>Optional.Add customs permissions for the group below!</h3>
       <div class="form-group">
         <label for="permission_name">Permission Name</label><span id="error_permission_name" class='text-danger ms-3'></span>
         <input type="text" name="permission_name" placeholder="Permission Name"class="form-control " id="permission_name">
@@ -130,8 +130,8 @@
       <div class="form-group">
         <label for="permission_codename">Permission Codename</label><span id="error_permission_codename" class='text-danger ms-3'></span>
         <input type="text" name="permission_codename" placeholder="Permission Code Name"class="form-control" id="permission_codename">
-      </div>
-      <h3>Optional.Add customs permissions for the group below!</h3>
+      </div> -->
+      <h3>Optional.Add permissions for the group!</h3>
       <!-- Remove Permission -->
       <ol class="all_perm">
      
@@ -232,7 +232,7 @@ $(document).ready(function() {
           $("#viewModal").modal("show");
         },
         error:function(){
-          alert.log("Something went wrong");
+          alert("Something went wrong");
         },
       });
       $("#viewModal").modal("hide");
@@ -247,40 +247,48 @@ $(document).ready(function() {
         $('#error_name').text(error_name);
 
       }
-      if($.trim($('#permission_codename').val()).length>0 && $.trim($('#permission_name').val()).length==0 ){
-        error_permission_name="Please enter a Permission name";
-        $('#error_permission_name').text(error_permission_name);
-      }
-      else{
-        error_permission_name="";
-        $('#error_permission_name').text(error_permission_name);
+      // if($.trim($('#permission_codename').val()).length>0 && $.trim($('#permission_name').val()).length==0 ){
+      //   error_permission_name="Please enter a Permission name";
+      //   $('#error_permission_name').text(error_permission_name);
+      // }
+      // else{
+      //   error_permission_name="";
+      //   $('#error_permission_name').text(error_permission_name);
 
-      }
-      if($.trim($('#permission_name').val()).length>0 && $.trim($('#permission_codename').val()).length==0){
-        error_permission_codename="Please enter a Permission Code name";
-        $('#error_permission_codename').text(error_permission_codename);
-      }
-      else{
-        error_permission_codename="";
-        $('#error_permission_codename').text(error_permission_codename);
+      // }
+      // if($.trim($('#permission_name').val()).length>0 && $.trim($('#permission_codename').val()).length==0){
+      //   error_permission_codename="Please enter a Permission Code name";
+      //   $('#error_permission_codename').text(error_permission_codename);
+      // }
+      // else{
+      //   error_permission_codename="";
+      //   $('#error_permission_codename').text(error_permission_codename);
 
-      }
-      if(error_name!=""||(error_permission_codename!="")||error_permission_name!=""){
-        return false;
-      }
+      // }
+      // if(error_name!=""||(error_permission_codename!="")||error_permission_name!=""){
+      //   return false;
+      // }
+      if(error_name!=""){
+        return false;}
       else{
         var role_name=$('#role_name').val();
-        var permission_name=$('#permission_name').val();
-        var permission_codename=$('#permission_codename').val();
-        console.log(permission_codename);
-        console.log(permission_name);
-        codename=permission_codename.toLowerCase().replace(/\s/g,'_')
-        console.log(codename);
+        // var permission_name=$('#permission_name').val();
+        // var permission_codename=$('#permission_codename').val();
+        // console.log(permission_codename);
+        // console.log(permission_name);
+        // codename=permission_codename.toLowerCase().replace(/\s/g,'_')
+        // console.log(codename);
+
+        var perms = [];
+            $('.all_perm :checkbox:checked').each(function(){
+                 var value= $(this).attr('value');
+                 perms.push(value);
+            });
+            console.log(perms);
         $.ajax({
           url:"{% url 'create_group_ajax' %}",
           method:"POST",
-          data:{csrfmiddlewaretoken: '{{ csrf_token }}','role_name':role_name,
-          'permission_name':permission_name,'permission_codename':codename},
+          data:{csrfmiddlewaretoken: '{{ csrf_token }}','role_name':role_name,'perms':perms},
           success:function(response){
             $('#createModal').modal('hide');
             $('#createModal').find('input').val('');
@@ -335,7 +343,7 @@ $(document).ready(function() {
           $("#editRoleModal").modal("show");
         },
         error:function(){
-          alert.log("Something went wrong");
+          alert("Something went wrong");
         },
       });
     });
@@ -365,6 +373,8 @@ $(document).ready(function() {
     });
     $('.edit_role_ajax').click(function(){
       var id=$("#roles_id").val();
+      var group_name=$("#group_name").val();
+      console.log(group_name);
       var arrId = [];
       let arrValue=[];
             $('.group_perm :checkbox:checked').each(function(){
@@ -379,7 +389,8 @@ $(document).ready(function() {
            $.ajax({
             url:"{% url 'ajax_edit_role' %}",
             type:"POST",
-            data:{csrfmiddlewaretoken:'{{csrf_token}}',arrValue:arrValue,role_id:id,},
+            data:{csrfmiddlewaretoken:'{{csrf_token}}','arrValue':arrValue,'role_id':id,'group_name':group_name
+          ,'arrid':[1,2,3]},
             dataType: 'JSON',
             success:function(response){
               console.log(response.status);
@@ -407,7 +418,7 @@ $(document).ready(function() {
               $("#createModal").modal("show");
         },
         error:function(){
-          alert.log("Something went wrong");
+          alert("Something went wrong");
         },
       });
     });
