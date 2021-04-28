@@ -176,17 +176,24 @@ def role_view_ajax(request):
 def create_group_ajax(request):
     if request.method=='POST':
         group_name=request.POST.get("role_name")
-        permission_name=request.POST.get("permission_name")
-        permission_codename=request.POST.get("permission_codename")
+        perms=request.POST.getlist('perms[]')
+        permissions_ids=[int(id) for id in perms]
+        # permission_name=request.POST.get("permission_name")
+        # permission_codename=request.POST.get("permission_codename")
         #create group 
         new_group,created=Group.objects.get_or_create(name=group_name)
          #create permission
-        if len(permission_name)>0 and len(permission_codename)>0:
-            userct = ContentType.objects.get_for_model(User)
-            created_permission = Permission.objects.create(codename =permission_codename, name =permission_name, content_type = userct)
-            # print("**********",created_permission)
-            #associate the permisiion to the group
-            new_group.permissions.add(created_permission)
+        # if len(permission_name)>0 and len(permission_codename)>0:
+        #     userct = ContentType.objects.get_for_model(User)
+        #     created_permission = Permission.objects.create(codename =permission_codename, name =permission_name, content_type = userct)
+        #     # print("**********",created_permission)
+        #     #associate the permisiion to the group
+        #     new_group.permissions.add(created_permission)
+        permission_list=[]
+        for id in permissions_ids:
+            permission=Permission.objects.get(id=id)
+            permission_list.append(permission)
+        new_group.permissions.set(permission_list)
         messages.success(request,"Group created successfuly!")
         data={'status':"Group created successfuly!"}
         return JsonResponse(data)
@@ -216,9 +223,12 @@ def edit_group_ajax(request):
 def ajax_edit_role(request):
     if request.method=='POST':
         group_id=request.POST.get("role_id")
+        group_name=request.POST.get("group_name")
         ids_values=request.POST.getlist("arrValue[]")
         ids_count=len(ids_values)
         group=Group.objects.get(id=group_id)
+        group.name = group_name
+        group.save()
         all_permissions_count=Permission.objects.all().count()
         all_permissions=Permission.objects.all()
         permission_ids= [int(id) for id in ids_values]
@@ -242,7 +252,6 @@ def create_role(request):
     if request.method=='GET':
         all_permissions=Permission.objects.all()
         data={'all_permissions':list(all_permissions.values())}
-        messages.success(request,"Create group successful!")
         return JsonResponse(data)
     else:
         return render(request,"accounts/roles.html")        
