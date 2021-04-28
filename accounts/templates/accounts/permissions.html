@@ -48,13 +48,7 @@
                         <td>
                             <a href="#" class="btn btn-tool btn-secondary edit_permission">
                                 <i style="color:black"class="fas fa-edit"></i></a>
-                        
-                        
-                            <a href="#" class="btn btn-tool btn-info ">
-                                <i style="color:black"class="fas fa-eye"></i>
-                            </a>
-                        
-                        <a href="#" class="btn btn-tool  btn-danger delete_permission" data-toggle="modal" data-target="#deletePermissionModal"><i style="color:black"class="fas fa-times"></i></a></td>
+   <a href="#" class="btn btn-tool  btn-danger delete_permission" data-toggle="modal" data-target="#deletePermissionModal"><i style="color:black"class="fas fa-times"></i></a></td>
                         
                     </tr>
                     {% endfor %}
@@ -146,15 +140,16 @@
     <input type="hidden" name="perm_id" class="form-control" id="perm_id"> 
       </div>
       <div class="modal-footer justify-content-center">
-        <div class="form-group ">
+        
         <button class="btn btn-success edit_permission_ajax "  type="button">Submit</button>
         <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-      </div>
+      
       </div>
     </div>
 
   </div>
 </div>
+
 {% endblock main_content%}
 {% block custom_js%}
 <script>
