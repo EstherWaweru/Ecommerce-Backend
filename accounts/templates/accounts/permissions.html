@@ -33,6 +33,7 @@
                         <th>Permission Name</th>
                         <th>Permission Codename</th>
                         <th>Action</th>
+                        <th><input type="checkbox" name="delete_all" id="delete_all" data-target=".delete_single" />&nbsp;</th>
                         
                     </tr>
                 </thead>
@@ -49,7 +50,7 @@
                             <a href="#" class="btn btn-tool btn-secondary edit_permission">
                                 <i style="color:black"class="fas fa-edit"></i></a>
    <a href="#" class="btn btn-tool  btn-danger delete_permission" data-toggle="modal" data-target="#deletePermissionModal"><i style="color:black"class="fas fa-times"></i></a></td>
-                        
+                        <td><input type="checkbox" class="delete_single"name="delete_single" id="delete_single" />&nbsp;</td>
                     </tr>
                     {% endfor %}
 
@@ -81,6 +82,14 @@
           <label for="permission_codename">Permission Codename</label><span id="error_permission_codename" class='text-danger ms-3'></span>
           <input type="text" name="permission_codename" placeholder="Enter a Permission Code Name"class="form-control" id="permission_codename">
         </div>
+        <div class="form-group">
+          
+          <button class="btn btn-success  btn-tool add_multiple_perm"  type="button"><i class="fas fa-plus"></i></button>
+        </div>
+        <div id="multiple_items">
+          
+        </div>
+
           
         </div>
         <div class="modal-footer justify-content-center">
@@ -291,6 +300,25 @@
               location.reload(true);
             },
            });}
+    });
+    $(".add_multiple_perm").click(function(){
+     
+      $("#multiple_items").append('<div> <div class="form-group" > <label for="input[]">Permission name</label><input  type="text" class="form-control " placeholder="Enter a permission name" name="input[]" value=""></div>\
+      <div class="form-group" >  <label for="input[]">Permission Codename</label> <input type="text" class="form-control " placeholder="Enter a permission codename" name="input[]" value=""></div>\
+      <button class="btn btn-danger btn-tool delete">Delete</button></div>');
+      $(".delete").click(function(e){
+        e.preventDefault(); 
+        $(this).parent('div').remove();
+
+      });
+    });
+    $('#delete_all').click(function(e){
+      // e.preventDefault();
+      var isChecked = $(this).prop("checked");
+      var selector = $(this).data('target');
+      $(selector).prop("checked", isChecked);
+
+
     });
 </script>
 {% if messages %} {% for message in messages %}
