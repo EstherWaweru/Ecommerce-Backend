@@ -311,18 +311,19 @@ def delete_multiple_permissions(request):
 def add_multiple_permissions(request):
     try:
         form_data=request.POST
-        print("****",form_data)
         name=request.POST.getlist('perm_name[]')
         codename=request.POST.getlist('perm_codename[]')
-        for i in name:
-            print(i)
-        for i in codename:
-            print(i)
         perm_dict = {name[i]: codename[i] for i in range(len(name))}
-        print(perm_dict)
         userct = ContentType.objects.get_for_model(User)
+        permissions=[]
         for key in perm_dict:
-            Permission.objects.create(codename=perm_dict[key], name =key, content_type = userct)
+            permission_name=key
+            permission_codename=perm_dict[key]
+            permissions.append(Permission(
+            codename=permission_codename,
+            name=permission_name,
+            content_type=userct, ))
+        Permission.objects.bulk_create(permissions)
         message.success(request,'Successfuly')
         return JsonResponse({'status':"Sucessfuly"})
     except:
