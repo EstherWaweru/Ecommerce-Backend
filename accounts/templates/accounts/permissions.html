@@ -33,7 +33,9 @@
                         <th>Permission Name</th>
                         <th>Permission Codename</th>
                         <th>Action</th>
-                        <th><input type="checkbox" name="delete_all" id="delete_all" data-target=".delete_single" />&nbsp;</th>
+                        <th><input type="checkbox" name="delete_all" id="selectAll" data-target=".selectRow"   />&nbsp;
+                        <a href="#" class="btn delete_all_icon" ><i style="color:red"class="fas fa-trash"></i></a> 
+                        </th>
                         
                     </tr>
                 </thead>
@@ -50,7 +52,7 @@
                             <a href="#" class="btn btn-tool btn-secondary edit_permission">
                                 <i style="color:black"class="fas fa-edit"></i></a>
    <a href="#" class="btn btn-tool  btn-danger delete_permission" data-toggle="modal" data-target="#deletePermissionModal"><i style="color:black"class="fas fa-times"></i></a></td>
-                        <td><input type="checkbox" class="delete_single"name="delete_single" id="delete_single" />&nbsp;</td>
+                        <td><input type="checkbox" class="selectRow"name="selectRow" value="{{permission.id}}"  />&nbsp;</td>
                     </tr>
                     {% endfor %}
 
@@ -166,7 +168,9 @@
         $('#permission-table').DataTable({
             "autoWidth": false,
         });
-        });
+        $(".delete_all_icon").hide();
+        
+      });
     
     $(".add_permission_ajax").click(function(){
       
@@ -312,14 +316,91 @@
 
       });
     });
-    $('#delete_all').click(function(e){
-      // e.preventDefault();
-      var isChecked = $(this).prop("checked");
-      var selector = $(this).data('target');
-      $(selector).prop("checked", isChecked);
+//     $('#selectAll').on('change', function() {
+//   var isChecked = $(this).prop("checked");
+//   var selector = $(this).data('target');
+//   $(selector).prop("checked", isChecked);
+// });
+    $('#selectAll').click(function(e){
+      
+  		$('.selectRow').prop('checked', true); 
+      $(".delete_all_icon").show();
+      if(!$(this).prop("checked")) {
+      		$('.selectRow').prop('checked', false);
+          $(".delete_all_icon").hide();
+      }
+      
+  });
+  $('.selectRow').change(function() {
+    // $(".delete_all_icon").show();
+  		if(!$(this).prop("checked")) {
+      		 $('#selectAll').prop('checked', false);
+           $(".delete_all_icon").hide();
+      } else {
+       
+      	 if ($('.selectRow:checked').length === $('.selectRow').length) {
+             $('#selectAll').prop('checked', true);
+             
+         }
+         if(!$('.selectRow:checked').length === $('.selectRow').length){
+          $('#selectAll').prop('checked', false);
+         }
+         if($('.selectRow:checked').length >0){
+          $(".delete_all_icon").show();
+         }
+      }
+  });
+  $('.delete_all_icon').click(function(e){
+    e.preventDefault;
+    if (confirm("Are you sure you want to delete this items?Action cannot be undone!")){
+  
+    var arrId=[];
+    $('#permission-table :checkbox:checked').each(function(i){
+   //    arrId[i]=$(this).val()  
+                //  if (arrId[i]=='on'){arrId.pop()}
+                 var id = $(this).parents("tr").children("td:eq(0)").text();
+                 arrId.push(id);    });
+            
+    if(arrId.length===0){
+      alert("Please select items to delete");
+    }
+    else{
+      $.ajax({
+        url:"{% url 'delete_multiple_permissions' %}",
+        method:"POST",
+        data:{csrfmiddlewaretoken:'{{csrf_token}}','arrId':arrId},
+        success:function(response){
+          console.log("Delete successful");
+          
+        },
+        error:function(){
+          console.log("Something went wrong!");
+        }
+      });
+
+    }}
+    else{
+      window.location.replace("{% url 'permissions_list' %}");
+    }
+
+  })
+  
+    // Get checked checkboxes
+    // $('#permission-table input[type=checkbox]').each(function() {
+    //   if (jQuery(this).is(":checked")) {
+    //     var id = this.id;
+    //     var splitid = id.split('_');
+    //     var postid = splitid[1];
+
+    //     post_arr.push(postid);
+        
+    //   }
+     
+   
 
 
-    });
+
+  
 </script>
 {% if messages %} {% for message in messages %}
 <script type=text/javascript>
