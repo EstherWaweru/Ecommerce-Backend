@@ -308,6 +308,26 @@ def delete_multiple_permissions(request):
     except:
         messages.error(request,"Error DEleting Permissions")
         return render(request,'accounts/permissions.html')
+def add_multiple_permissions(request):
+    try:
+        form_data=request.POST
+        print("****",form_data)
+        name=request.POST.getlist('perm_name[]')
+        codename=request.POST.getlist('perm_codename[]')
+        for i in name:
+            print(i)
+        for i in codename:
+            print(i)
+        perm_dict = {name[i]: codename[i] for i in range(len(name))}
+        print(perm_dict)
+        userct = ContentType.objects.get_for_model(User)
+        for key in perm_dict:
+            Permission.objects.create(codename=perm_dict[key], name =key, content_type = userct)
+        message.success(request,'Successfuly')
+        return JsonResponse({'status':"Sucessfuly"})
+    except:
+        messages.error(request,"Error")
+        return HttpResponseRedirect(reverse('permissions_list'))
 
 
     

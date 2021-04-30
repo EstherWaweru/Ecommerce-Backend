@@ -20,6 +20,7 @@ urlpatterns=[
     path('add_permission/',views.add_permission,name="add_permission"),
     path('permissions/',views.permissions_list,name="permissions_list"),
     path('delete_permission/',views.delete_permission_ajax,name="delete_permission_ajax"),
+    path('add_multiple_permissions',views.add_multiple_permissions,name="add_multiple_permissions"),
     path('delete_multiple_permissions/',views.delete_multiple_permissions,
     name='delete_multiple_permissions'),
     path('edit_permission/',views.edit_permission,name="edit_permission"),
