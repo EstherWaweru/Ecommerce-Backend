@@ -247,6 +247,7 @@ def delete_group_ajax(request):
         messages.error(request,"Failed to Delete Group ")
         return HttpResponse("False")
 def permissions_list(request):
+    
     permissions=Permission.objects.all().values('name','id','codename')
     context={'permissions':permissions}
     return render(request,'accounts/permissions.html',context)
@@ -294,6 +295,20 @@ def edit_permission_ajax(request):
         return JsonResponse(data)
     except:
         return render(request,'accounts/permissions.html')
+def delete_multiple_permissions(request):
+    try:
+        perm_ids=request.POST.getlist('arrId[]')
+        if '' in perm_ids:
+            perm_ids.remove('')
+        perm_ids=[int(id) for id in perm_ids]
+        permissions=Permission.objects.filter(id__in=perm_ids)
+        permissions.delete()
+        messages.success(request,"Successful Deleteion of multiple permissions")
+        return HttpResponseRedirect(reverse("permissions_list"))
+    except:
+        messages.error(request,"Error DEleting Permissions")
+        return render(request,'accounts/permissions.html')
+
 
     
 

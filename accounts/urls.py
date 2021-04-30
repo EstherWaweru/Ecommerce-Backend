@@ -20,6 +20,8 @@ urlpatterns=[
     path('add_permission/',views.add_permission,name="add_permission"),
     path('permissions/',views.permissions_list,name="permissions_list"),
     path('delete_permission/',views.delete_permission_ajax,name="delete_permission_ajax"),
+    path('delete_multiple_permissions/',views.delete_multiple_permissions,
+    name='delete_multiple_permissions'),
     path('edit_permission/',views.edit_permission,name="edit_permission"),
     path('edit_permission_ajax/',views.edit_permission_ajax,name='edit_permission_ajax'),
     path('password_reset/',auth_views.PasswordResetView.as_view(
