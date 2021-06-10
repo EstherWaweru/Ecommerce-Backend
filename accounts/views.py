@@ -324,7 +324,7 @@ def add_multiple_permissions(request):
             name=permission_name,
             content_type=userct, ))
         Permission.objects.bulk_create(permissions)
-        message.success(request,'Successfuly')
+        messages.success(request,'Successfuly')
         return JsonResponse({'status':"Sucessfuly"})
     except:
         messages.error(request,"Error")
