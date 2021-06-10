@@ -3,3 +3,5 @@ ENV/
 .pyc*
 __pycache__/
 ecommerceworkspace.code-workspace
+saftest.py
+.gitignore
