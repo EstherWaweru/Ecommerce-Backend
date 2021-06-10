@@ -1,58 +1,66 @@
 from django.db import models
 from django.db.models.deletion import CASCADE
+from django.utils.text import  slugify
 
 # Create your product models here.
-class ProductUtils(models.Model):
+class ProductUtil(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 
-class Category(ProductUtils):
+class Category(ProductUtil):
     name = models.CharField(unique=True,max_length=255)
-    image = models.ImageField()
+    slug = models.SlugField(max_length=255,unique=True,blank=True)
+    image = models.ImageField(upload_to='media/products')
     
     def __str__(self):
         return self.name
+    
+    def save(self,*args,**kwargs):
+        if not self.slug:
+            self.slug=slugify(self.name)
+        return super().save(*args, **kwargs)
 
-class SubCategory(ProductUtils):
+
+class SubCategory(ProductUtil):
     name = models.CharField(unique=True,max_length=255)
-    category = models.ForeignKey(Category,on_delete=models.CASCADE,related_name='sub_categories')
-    image = models.ImageField()
+    categories = models.ForeignKey(Category,on_delete=models.CASCADE,related_name='sub_categories')
+    image = models.ImageField(upload_to='media/products')
 
     def __str__(self):
         return self.name
 
-class Brand(ProductUtils):
+class Brand(ProductUtil):
     name = models.CharField(unique=True,max_length=255)
-    image = models.ImageField()
+    image = models.ImageField(upload_to='media/products')
 
     def __str__(self) -> str:
         return self.name
 
-class Product(ProductUtils):
+class Item(ProductUtil):
     name = models.CharField(max_length=255)
-    image = models.ImageField()
+    image = models.ImageField(upload_to='media/products')
     description = models.TextField()
     review = models.TextField()
     rating = models.CharField(max_length=255)
     price = models.FloatField()
     discounted_price = models.FloatField()
-    brand = models.ForeignKey(Brand,on_delete=models.CASCADE,related_name="products")
-    subcategory = models.ForeignKey(SubCategory,on_delete=models.CASCADE)
+    brands = models.ForeignKey(Brand,on_delete=models.CASCADE,related_name="products")
+    subcategories = models.ForeignKey(SubCategory,on_delete=models.CASCADE)
 
     def __str__(self) -> str:
         return self.name
 
-class Variation(ProductUtils):
+class Variation(ProductUtil):
     name = models.CharField(max_length=255)
-    product = models.ForeignKey(Product,on_delete=models.CASCADE,related_name="variations")
+    items = models.ForeignKey(Item,on_delete=models.CASCADE,related_name="variations")
 
     def __str__(self):
         return self.name
 
-class ProductVariation(ProductUtils):
+class ItemVariation(ProductUtil):
     value = models.CharField(max_length=250)#black,small
-    image = models.ImageField()
-    variation = models.ForeignKey(Variation,on_delete=CASCADE,related_name="product_variations")
+    image = models.ImageField(upload_to='media/products')
+    variations = models.ForeignKey(Variation,on_delete=CASCADE,related_name="item_variations")
 
 
 
