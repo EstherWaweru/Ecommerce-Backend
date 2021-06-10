@@ -1,5 +1,7 @@
 from django.test import TestCase
 from django.utils import timezone
+import django
+django.setup()
 from products.models import Category, ProductUtil
 
 # Create your model tests here.
@@ -21,4 +23,4 @@ class CategoryTest(TestCase):
     def test_category_creation(self):
         self.assertTrue(isinstance(self.category,Category))
         self.assertEqual(self.category.__str__(),self.category.name)
-        self.assertEquals(self.category.slug,"electronics")
+        self.assertEqual(self.category.slug,"electronics")
