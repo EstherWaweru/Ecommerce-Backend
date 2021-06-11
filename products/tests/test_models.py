@@ -1,7 +1,10 @@
 from django.test import TestCase
 from django.utils import timezone
-import django
-django.setup()
+# import django
+# import os
+# os.environ.setdefault("DJANGO_SETTINGS_MODULE", "ecommerce_backend.settings.dev")
+# django.setup()
+
 from products.models import Category, ProductUtil
 
 # Create your model tests here.
