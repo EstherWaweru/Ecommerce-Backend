@@ -43,6 +43,8 @@ DATABASES = {
     'ENGINE': 'django.db.backends.mysql',
     'NAME': os.environ['DATABASE_NAME'],
     'USER': os.environ['DATABASE_USER'],
+    'PASSWORD': '',
+    'HOST': '127.0.0.1',
     # 'PASSWORD': os.environ['DATABASE_PASSWORD'],
     }
 }
