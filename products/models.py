@@ -49,10 +49,17 @@ class Item(ProductUtil):
 
     def __str__(self) -> str:
         return self.name
+    
+
 
 class Variation(ProductUtil):
     name = models.CharField(max_length=255)
     items = models.ForeignKey(Item,on_delete=models.CASCADE,related_name="variations")
+
+    @property
+    def get_item_variations(self):
+        total_list=ItemVariation.objects.filter(variations=self)
+        return total_list.count()
 
     def __str__(self):
         return self.name
