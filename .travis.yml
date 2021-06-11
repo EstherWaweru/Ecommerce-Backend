@@ -24,6 +24,8 @@ before_script:
 - mysql -e 'create database ecommerce_test;' -u root
 script:
 # - python manage.py test
+- python manage.py makemigrations
+- python manage.py migrate
 - pytest --cov=products --cov-report=term-missing
 
 after_sucess:
