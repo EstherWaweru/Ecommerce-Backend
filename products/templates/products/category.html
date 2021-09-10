@@ -416,12 +416,12 @@
     var formdata=$("#multiple_category_form").serialize();
     var category_image=[]
     var category_name=[]
-    // $('input[name="txt_category_image[]"]').each(function() {
-    // category_image.push($(this).val().toLowerCase().replace(/\s/g,'_'));
-    // });
-    // $('input[name="txt_category_name[]"]').each(function() {
-    // category_name.push($(this).val());
-    // });
+    $('input[name="txt_category_image[]"]').each(function() {
+    category_image.push($(this).val().toLowerCase().replace(/\s/g,'_'));
+    });
+    $('input[name="txt_category_name[]"]').each(function() {
+    category_name.push($(this).val());
+    });
     $.ajax({
       url:"{% url 'products:add_multiple_categories' %}",
       method:"POST",

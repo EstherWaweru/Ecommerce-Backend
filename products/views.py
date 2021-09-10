@@ -96,7 +96,22 @@ def ajax_edit_category(request):
 def delete_multiple_categories(request):
     pass
 def add_multiple_categories(request):
-    pass
+    if request.method == 'POST':
+        category_name = request.POST.getlist('category_name[]')
+        print(category_name)
+        category_image = request.POST.getlist('category_image[]')
+        category_dict = {category_name[i]: category_image[i] for i in range(len(category_name))}
+        categories = []
+        for category in category_dict:
+            name=category
+            image = category_dict[category]
+            categories.append(Category(
+            name=name,
+            image=image,
+             ))
+        Category.objects.bulk_create(categories)
+        messages.success(request,'Successfuly')
+        return JsonResponse({'status':"Sucessfuly"})
 
 def add_brand(request):
     pass
