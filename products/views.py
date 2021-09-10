@@ -63,7 +63,16 @@ def create_category_ajax(request):
 def create_category(request):
     pass
 def delete_category_ajax(request):
-    pass
+    if request.method == 'POST':
+        category_id = request.POST.get('id')
+        try:
+            Category.objects.filter(id = category_id).delete()
+            messages.success(request,"Category created succesfuly")
+            return JsonResponse(json.dumps({'status':200}))
+        except:
+             messages.error(request,"Operation not succesful")
+             return render(request,'products/categories.html')
+            
 def edit_category_ajax(request):
     if request.method == 'POST':
         category_name = request.POST.get('category_name')
