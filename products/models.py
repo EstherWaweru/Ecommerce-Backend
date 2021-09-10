@@ -7,6 +7,9 @@ class ProductUtil(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 
+    class Meta:
+        abstract = True
+
 class Category(ProductUtil):
     name = models.CharField(unique=True,max_length=255)
     slug = models.SlugField(max_length=255,unique=True,blank=True)

@@ -1,3 +1,4 @@
+from django.http.response import HttpResponseNotFound
 from django.shortcuts import render
 from django.contrib import messages
 from products.models import Brand, Category, Item, ItemVariation, ProductUtil, SubCategory, Variation
@@ -27,8 +28,7 @@ def add_category(request):
             else:
                 messages.error("Category already exists!")
                 message = "Category already exists!"
-                data={'status':message}
-        return JsonResponse(data)
+        return JsonResponse(message,safe = False)
     else:
        return render(request,'products/categories.html')
 
@@ -36,7 +36,21 @@ def add_category(request):
 
 
 def edit_category(request):
-    pass
+    if request.method == 'POST':
+        
+        category_id = request.POST.get('category_id')
+        try:
+            category = Category.objects.get(id = category_id)
+            data = {'name':category.name,'image':category.image.url}
+            print(data)
+            return JsonResponse(data, safe = False)
+        except:
+            return render(request,'products/categories.html')
+
+
+
+    
+    
 def get_category(request):
     pass
 def get_all_categories(request):

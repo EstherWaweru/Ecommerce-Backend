@@ -169,7 +169,7 @@
     <!-- Modal content-->
     <div class="modal-content">
       <div class="modal-header">
-        <h4 class="modal-title">Edit  <span id="edit_category_name"></span></h4>
+        <h4 class="modal-title">Edit  <span id="edit_category_span"></span></h4>
           <button type="button" class="close" data-dismiss="modal">&times;</button>
       </div>
       <div class="modal-body">
@@ -228,7 +228,7 @@
         // Check file selected or not
         if(files.length > 0 ){
            fd.append('category_image',files[0]);}
-          
+        
         var category_name = $('#category_name').val();
         // var myform = document.getElementById("add_category_form");
         // var fd1 = new FormData(myform );
@@ -237,12 +237,11 @@
           url:"{% url 'products:add_category' %}",
           method:"POST",
           data:{category_name,category_image},
-          processData: false,
+          // processData: false,
           success:function(response){
             $('#createCategoryModal').modal('hide');
             $('#createCategoryModal').find('input').val('');
             location.reload(true);
-            console.log(response.status);
           },
           error:function(){
             $('#createCategoryModal').modal('hide');
@@ -284,10 +283,10 @@
         type:"POST",
         data:{'category_id':category_id,csrfmiddlewaretoken:'{{csrf_token}}'},
         success:function(response){
-          console.log(response);
-          $("#edit_category_name").html(response.name);
+          categories_name = response.name;
+          $("#edit_category_span").html(categories_name);
           $('#edit_category_image').val(response.image);
-          $('#edit_category_name').val(response.name);
+          $('#edit_category_name').val(categories_name);
           $("#category_id").val(category_id);
           $("#editcategoryModal").modal("show");
         },
