@@ -5,6 +5,7 @@ from products.models import Brand, Category, Item, ItemVariation, ProductUtil, S
 from django.http import JsonResponse
 from django.core.files.storage import FileSystemStorage
 from django.views.decorators.csrf import csrf_exempt
+import json
 # Create your views here.
 @csrf_exempt
 def add_category(request):
@@ -47,10 +48,6 @@ def edit_category(request):
         except:
             return render(request,'products/categories.html')
 
-
-
-    
-    
 def get_category(request):
     pass
 def get_all_categories(request):
@@ -68,7 +65,23 @@ def create_category(request):
 def delete_category_ajax(request):
     pass
 def edit_category_ajax(request):
-    pass
+    if request.method == 'POST':
+        category_name = request.POST.get('category_name')
+        category_image = request.POST.get('category_image')
+        category_id = request.POST.get('category_id')
+        #check if category exist
+        category = Category.objects.get(id = category_id)
+        data ={}
+        if category.name == category_name:
+            return JsonResponse(data = {'status_code':400,'detail':'Object Exists!'},safe=False)
+        try:
+            Category.objects.filter(id = category_id).update(name = category_name,image = category_image)
+            data = {'status':200,'detail':'Success'}
+            return JsonResponse(json.dumps(data))
+        except:
+            return JsonResponse(data = {'status_code':500,'detail':'Something went wrong!'},safe=False)
+
+
 def ajax_edit_category(request):
     pass
 def delete_multiple_categories(request):

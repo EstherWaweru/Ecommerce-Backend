@@ -173,14 +173,16 @@
           <button type="button" class="close" data-dismiss="modal">&times;</button>
       </div>
       <div class="modal-body">
+        <form id="edit_category_form"  enctype="multipart/form-data">
         <div class="form-group">
           <label for="edit_category_name">Category Name</label><span id="edit_error_category_name" class='text-danger ms-3'></span>
           <input type="text" name="edit_category_name" placeholder="Enter a Category Name"class="form-control " id="edit_category_name" required>
         </div>
         <div class="form-group">
           <label for="edit_category_image">Category image</label>
-          <input type="image" name="edit_category_image" class="form-control" id="edit_category_image">
+          <input type="file" name="edit_category_image" class="form-control" id="edit_category_image">
         </div>
+      </form>
      
     <input type="hidden" name="category_id" class="form-control" id="category_id"> 
       </div>
@@ -285,7 +287,7 @@
         success:function(response){
           categories_name = response.name;
           $("#edit_category_span").html(categories_name);
-          $('#edit_category_image').val(response.image);
+          // $('#edit_category_image').val(response.image);
           $('#edit_category_name').val(categories_name);
           $("#category_id").val(category_id);
           $("#editcategoryModal").modal("show");
@@ -312,7 +314,13 @@
       }
       else{
       var category_name=$("#edit_category_name").val();
-      var category_image=$("#edit_category_image").val();
+      // var fd = new FormData();
+      // var files = $('#category_image')[0].files;
+      //   // Check file selected or not
+      // if(files.length > 0 ){
+      //     fd.append('category_image',files[0]);}
+        
+       var category_image=$("#edit_category_image").val();
      
            $.ajax({
             url:"{% url 'products:edit_category_ajax' %}",
