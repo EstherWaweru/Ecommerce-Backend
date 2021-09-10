@@ -7,3 +7,4 @@ saftest.py
 .gitignore
 .coverage
 .vscode/
+.coverage

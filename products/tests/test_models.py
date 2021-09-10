@@ -3,8 +3,8 @@ from django.urls import reverse
 from django.utils import timezone
 import django
 import os
-os.environ.setdefault("DJANGO_SETTINGS_MODULE", "ecommerce_backend.settings.travis")
-# os.environ.setdefault("DJANGO_SETTINGS_MODULE", "ecommerce_backend.settings.dev")
+# os.environ.setdefault("DJANGO_SETTINGS_MODULE", "ecommerce_backend.settings.travis")
+os.environ.setdefault("DJANGO_SETTINGS_MODULE", "ecommerce_backend.settings.dev")
 django.setup()
 
 from products.models import Brand, Category, Item, ItemVariation, ProductUtil, SubCategory, Variation
@@ -30,17 +30,17 @@ class ProductUtilTest(TestCase):
 class CategoryTest(TestCase):
     
     def setUp(self):
-        self.category = Category.objects.create(name="Electronics")
+        self.category = Category.objects.create(name="Electronicssss")
     
     def test_category_creation(self):
         self.assertTrue(isinstance(self.category,Category))
         self.assertEqual(self.category.__str__(),self.category.name)
-        self.assertEqual(self.category.slug,"electronics")
+        self.assertEqual(self.category.slug,"electronicssss")
 
 class SubCategoryTest(TestCase):
 
     def setUp(self):
-        self.category =Category.objects.create(name="Electronic")
+        self.category =Category.objects.create(name="Electroni")
         self.subcategory = SubCategory.objects.create(name="Phones",categories=self.category)
     
     def test_subcategory_creation(self):
@@ -59,9 +59,9 @@ class BrandTest(TestCase):
 class ItemTest(TestCase):
     @classmethod
     def setUp(cls):
-        cls.category=Category.objects.create(name="Electronics")
-        cls.subcategory=SubCategory.objects.create(name="Samsung",categories=cls.category)
-        cls.brand = Brand.objects.create(name="Samsun")
+        cls.category=Category.objects.create(name="Elecronics")
+        cls.subcategory=SubCategory.objects.create(name="Sasung",categories=cls.category)
+        cls.brand = Brand.objects.create(name="Sasun")
         cls.item = Item.objects.create(name="Galaxy 5",subcategories=cls.subcategory,brands=cls.brand,price=10000,discounted_price=5000)
     
     def test_item_creation(self):
@@ -73,7 +73,7 @@ class VariationTest(TestCase):
     @classmethod
     def setUp(cls):
         
-        cls.category=Category.objects.create(name="Electronics")
+        cls.category=Category.objects.create(name="Electnics")
         cls.subcategory=SubCategory.objects.create(name="Samsung",categories=cls.category)
         cls.brand = Brand.objects.create(name="Samsun")
         cls.item = Item.objects.create(name="Galaxy 5",subcategories=cls.subcategory,brands=cls.brand,price=10000,discounted_price=5000)
@@ -97,9 +97,9 @@ class ItemVariationTest(TestCase):
     @classmethod
     def setUp(cls):
         
-        cls.category=Category.objects.create(name="Electronics")
-        cls.subcategory=SubCategory.objects.create(name="Samsung",categories=cls.category)
-        cls.brand = Brand.objects.create(name="Samsun")
+        cls.category=Category.objects.create(name="Electonics")
+        cls.subcategory=SubCategory.objects.create(name="Samsungss",categories=cls.category)
+        cls.brand = Brand.objects.create(name="Samsuns")
         cls.item = Item.objects.create(name="Galaxy 5",subcategories=cls.subcategory,brands=cls.brand,price=10000,discounted_price=5000)
         cls.variation = Variation.objects.create(name="Color",items=cls.item)
         cls.item_variation = ItemVariation.objects.create(value="red",variations=cls.variation)
@@ -110,5 +110,16 @@ class ItemVariationTest(TestCase):
     
     def test_item_vation_creation(self):
         self.assertTrue(isinstance(self.item_variation,ItemVariation))
+    
+class CategoryTe(TestCase):
+    
+    def setUp(self):
+        self.category = Category(name="Eectronicssss")
+    
+    def test_category_creation(self):
+        self.assertEqual(self.category.name,"Eectronicssss")
+        self.assertTrue(isinstance(self.category,Category))
+        self.assertEqual(self.category.__str__(),self.category.name)
+        # self.assertEqual(self.category.slug,"Eectronicssss")
         
     
