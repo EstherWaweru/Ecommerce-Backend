@@ -101,7 +101,9 @@ def add_multiple_categories(request):
         print(category_name)
         category_image = request.POST.getlist('category_image[]')
         category_dict = {category_name[i]: category_image[i] for i in range(len(category_name))}
+        print(category_dict)
         categories = []
+        print("-----------------")
         for category in category_dict:
             name=category
             image = category_dict[category]
@@ -109,6 +111,8 @@ def add_multiple_categories(request):
             name=name,
             image=image,
              ))
+        print("*****************")
+        print(categories)
         Category.objects.bulk_create(categories)
         messages.success(request,'Successfuly')
         return JsonResponse({'status':"Sucessfuly"})

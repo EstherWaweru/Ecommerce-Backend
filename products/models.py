@@ -12,16 +12,16 @@ class ProductUtil(models.Model):
 
 class Category(ProductUtil):
     name = models.CharField(unique=True,max_length=255)
-    slug = models.SlugField(max_length=255,unique=True,blank=True)
+    # slug = models.SlugField(max_length=255,unique=True,blank=True)
     image = models.ImageField(upload_to='media/products')
     
     def __str__(self):
         return self.name
     
-    def save(self,*args,**kwargs):
-        if not self.slug:
-            self.slug=slugify(self.name)
-        return super().save(*args, **kwargs)
+    # def save(self,*args,**kwargs):
+    #     if not self.slug:
+    #         self.slug=slugify(self.name)
+    #     return super().save(*args, **kwargs)
 
 
 class SubCategory(ProductUtil):
