@@ -21,7 +21,18 @@ urlpatterns=[
     path('edit_sub_category/', views.edit_sub_category, name = 'edit_sub_category'),
     path('edit_sub_category_ajax/', views.edit_sub_category_ajax, name = 'edit_sub_category_ajax'),
     path('delete_multiple_sub_categories/',views.delete_multiple_sub_categories, name ='delete_multiple_sub_categories'),
-    path('add_multiple_sub_categories/',views.add_multiple_sub_categories, name = 'add_multiple_sub_categories'),   
+    path('add_multiple_sub_categories/',views.add_multiple_sub_categories, name = 'add_multiple_sub_categories'),
+    #brands
+    path('brands/', views.get_all_brands, name = 'brands'),   
+    path('add_brand/', views.add_brand, name = 'add_brand'),
+    path('delete_brand/', views.delete_brand, name = 'delete_brand_ajax'),
+    path('edit_brand/',views.update_brand, name='edit_brand'),
+    path('edit_brand_ajax/',views.edit_brand_ajax,name = 'edit_brand_ajax'),
+    path('delete_multiple_brands/',views.delete_multiple_brands, name = 'delete_multiple_brands'),
+    path('brand_view_ajax/',views.brand_view_ajax, name ='brand_view_ajax'),
+    path('add_multiple_brands/',views.add_multiple_brands,name = 'add_multiple_brands')
+
+
 ]
 
 

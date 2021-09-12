@@ -48,15 +48,10 @@ def edit_category(request):
             return JsonResponse(data, safe = False)
         except:
             return render(request,'products/categories.html')
-
-def get_category(request):
-    pass
 def get_all_categories(request):
     categories = Category.objects.all()
     context={'categories':categories}
     return render(request,'products/category.html',context)
-def delete_categories(request):
-    pass
 def category_view_ajax(request):
     if request.method=='POST':
         category_id=request.POST.get("category_id")
@@ -66,10 +61,6 @@ def category_view_ajax(request):
         return JsonResponse(data)
     else:
         return render(request,'products/category.html')
-def create_category_ajax(request):
-    pass
-def create_category(request):
-    pass
 def delete_category_ajax(request):
     if request.method == 'POST':
         category_id = request.POST.get('id')
@@ -101,9 +92,6 @@ def edit_category_ajax(request):
             messages.error(request,'Something went wrong!')
             return render(request,'products/categories.html')
 
-
-def ajax_edit_category(request):
-    pass
 def delete_multiple_categories(request):
     pass
 def add_multiple_categories(request):
@@ -210,19 +198,25 @@ def add_multiple_sub_categories(request):
     
         
 
-
-
-
-
 def add_brand(request):
     pass
 def update_brand(request):
     pass
+def edit_brand_ajax(request):
+    pass
 def get_brand(request):
     pass
 def get_all_brands(request):
-    pass
+    brands = Brand.objects.all()
+    context = {'brands':brands}
+    return render(request,'products/brand.html')
 def delete_brand(request):
+    pass
+def delete_multiple_brands(request):
+    pass
+def brand_view_ajax(request):
+    pass
+def add_multiple_brands(request):
     pass
 
 # def add_category(request):
