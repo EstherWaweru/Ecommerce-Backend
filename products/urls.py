@@ -31,6 +31,17 @@ urlpatterns=[
     path('delete_multiple_brands/',views.delete_multiple_brands, name = 'delete_multiple_brands'),
     path('brand_view_ajax/',views.brand_view_ajax, name ='brand_view_ajax'),
     path('add_multiple_brands/',views.add_multiple_brands,name = 'add_multiple_brands'),
+    #items
+    path('items/',views.get_all_items,name = 'items'),
+    path('add_item/',views.add_item, name = 'add_item'),
+    path('delete_item/',views.delete_item, name = 'delete_item_ajax'),
+    path('edit_item/',views.edit_item,name = 'edit_item'),
+    path('edit_item_ajax/', views.edit_item_ajax,name = 'edit_item_ajax'),
+    path('delete_multiple_items/',views.delete_multiple_items,name = 'delete_multiple_items'),
+    path('item_view_ajax/',views.item_view_ajax,name = 'item_view_ajax'),
+    path('add_multiple_items', views.add_multiple_items, name = 'add_multiple_items'),
+    path('get_brands_subcategories', views.get_brands_subcategories ,name = 'get_brands_subcategories')
+    
     
 
 
