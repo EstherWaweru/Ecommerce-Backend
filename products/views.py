@@ -279,6 +279,22 @@ def add_multiple_brands(request):
     else:
         return render(request,'products/brand.html')
 
-
-    
-
+#item views
+def get_all_items(request):
+    items = Item.objects.all()
+    context = {'items':items}
+    return render(request,'products/item.html',context=context)
+def add_item(request):
+    pass
+def edit_item(request):
+    pass
+def edit_item_ajax(request):
+    pass
+def delete_item(request):
+    pass
+def delete_multiple_items(request):
+    pass
+def item_view_ajax(request):
+    pass
+def add_multiple_items(request):
+    pass
