@@ -5,6 +5,7 @@ from products.models import Brand, Category, Item, ItemVariation, ProductUtil, S
 from django.http import JsonResponse
 from django.core.files.storage import FileSystemStorage
 from django.views.decorators.csrf import csrf_exempt
+from django.core import serializers
 import json
 # Create your views here.
 @csrf_exempt
@@ -116,6 +117,36 @@ def add_multiple_categories(request):
         Category.objects.bulk_create(categories)
         messages.success(request,'Successfuly')
         return JsonResponse({'status':"Sucessfuly"})
+
+#sub_categories routes
+def get_all_sub_categories(request):
+    sub_categories = SubCategory.objects.all()
+    context={'sub_categories':sub_categories}
+    return render(request,'products/sub_category.html',context)
+def get_categories(request):
+    
+    categories = Category.objects.all().values('id','name')
+    return JsonResponse(list(categories),safe = False)
+    
+def add_sub_category(request):
+    pass
+def delete_sub_category_ajax(request):
+    pass
+def edit_sub_category(request):
+    pass
+def edit_sub_category_ajax(request):
+    pass
+def delete_multiple_sub_categories(request):
+    pass
+def add_multiple_sub_categories(request):
+    pass
+
+    
+        
+
+
+
+
 
 def add_brand(request):
     pass
