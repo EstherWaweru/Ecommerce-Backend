@@ -58,7 +58,14 @@ def get_all_categories(request):
 def delete_categories(request):
     pass
 def category_view_ajax(request):
-    pass
+    if request.method=='POST':
+        category_id=request.POST.get("category_id")
+        category=Category.objects.get(id=category_id)
+        sub_categories=category.sub_categories.all()
+        data={'category':category.name,'sub_categories':list(sub_categories.values('name','id'))}
+        return JsonResponse(data)
+    else:
+        return render(request,'products/category.html')
 def create_category_ajax(request):
     pass
 def create_category(request):
@@ -178,27 +185,27 @@ def edit_sub_category_ajax(request):
         image = request.POST.get('sub_category_image')
         category_id = request.POST.get('category')
         id = request.POST.get('id')
-        # try:
-        category = Category.objects.get(id = category_id)
-        sub_category = SubCategory.objects.get(id = id)
-        # if sub_category.name != name:
-            # if SubCategory.objects.get(name = name):
-            #     messages.error(request,'Sub Category Already Exists!')
-            #     return render(request,'products/sub_category.html')
-
-        SubCategory.objects.filter(id = id).update(name = name,image = image,categories = category)
-        messages.success(request,'Operation succesful')
-        return JsonResponse(json.dumps({'status':'Success!'}),safe = False)
-        # except:
-        #     messages.error(request,'Something went wrong')
-        #     return render(request,'products/sub_category.html')
+        try:
+            category = Category.objects.get(id = category_id)
+            SubCategory.objects.filter(id = id).update(name = name,image = image,categories = category)
+            messages.success(request,'Operation succesful')
+            return JsonResponse(json.dumps({'status':'Success!'}),safe = False)
+        except:
+            messages.error(request,'Something went wrong')
+            return render(request,'products/sub_category.html')
     else:
         return render(request,'products/sub_category.html')
 
 def delete_multiple_sub_categories(request):
     pass
 def add_multiple_sub_categories(request):
-    pass
+    if request.method == 'POST':
+        names = request.POST.getlist('sub_category_name[]')
+        images = request.POST.getlist('sub_category_image[]')
+        category_id = request.POST.getlist('category[]')
+        
+    else:
+        return render(request,'products/sub_category.html')
 
     
         

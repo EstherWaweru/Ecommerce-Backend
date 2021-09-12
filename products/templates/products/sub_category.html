@@ -18,7 +18,7 @@
             <a href="" class="btn btn-success add_sub_category" data-target="#createSubCategoryModal" data-toggle="modal"><span class=""><i class="feather icon-plus"></i> Add New Sub category</span></a>
           </div>
           <div col="col-sm-4">
-            <a href="#" class="btn btn-secondary " data-target="#createMultipleCategories" data-toggle="modal"><span class=""><i class="feather icon-plus"></i> Add Multiple Categories</span></a>
+            <a href="#" class="btn btn-secondary get_categories" data-target="#createMultipleCategories" data-toggle="modal"><span class=""><i class="feather icon-plus"></i> Add Multiple Categories</span></a>
           </div>
           </div>
             <br>   
@@ -82,11 +82,13 @@
         <form id="multiple_sub_category_form"  enctype="multipart/form-data">
         <table id="table_field">
           <tr>
-            <th>sub_category Name</th>
-            <th> sub_category image</th>
+              <th>Category</th>
+            <th>Sub Category Name</th>
+            <th> Sub Category Image</th>
             <th>Action</th>
           </tr>
           <tr>
+              <td><select class ="form-control categories_list"></select></td>
             <td><input type="text" class="form-control" name="txt_sub_category_name[]" required></td>
             <td><input type="file" class="form-control" name="txt_sub_category_image[]"></td>
             <td> <button class="btn btn_add_sub_categories"  type="button"><i class="fas fa-plus"></i></button></td>
@@ -427,15 +429,39 @@
     }
 
   });
+  $('.get_categories').click(function(){
+    $(".categories_list").html("");
+        $.ajax({
+        url:"{% url 'products:get_categories' %}",
+        type:"POST",
+        data:{csrfmiddlewaretoken:'{{csrf_token}}'},
+        success:function(response){
+            console.log(response);
+            $.each(response,function name(key,value) {
+                console.log(value['name']);
+                console.log(value['id']);
+                $(".categories_list").append(`<option value =` +value['id']+`>`+value['name']+`</option>`);
+            });
+          $("#createMultipleCategories").modal("show");
+        },
+        error:function(){
+          alert("Something went wrong");
+        },
+      });
+
+  })
   $('.btn_add_sub_categories').click(function(e){
      e.preventDefault();
      
      var tablehtml='<tr>\
+            <td><select class ="form-control categories_list"></select></td>\
             <td><input type="text" class="form-control" name="txt_sub_category_name[]" required></td>\
             <td><input type="file" class="form-control" name="txt_sub_category_image[]" required></td>\
             <td> <button class="btn btn_remove_sub_categories"  type="button"><i class="fas fa-trash"></i></button></td>\
-          </tr>'
+          </tr>';
           $('#table_field').append(tablehtml);
+        //   Store the category data and display it in runtie
+          $("#table_field .categories_list").append(`<option value =` +value['id']+`>`+value['name']+`</option>`);
           $('#table_field .btn_remove_sub_categories').click(function(e){
             $(this).closest('tr').remove();
           });
@@ -446,7 +472,7 @@
     var sub_category_image=[]
     var sub_category_name=[]
     $('input[name="txt_sub_category_image[]"]').each(function() {
-    sub_category_image.push($(this).val().toLowerCase().replace(/\s/g,'_'));
+    sub_category_image.push($(this).val());
     });
     $('input[name="txt_sub_category_name[]"]').each(function() {
     sub_category_name.push($(this).val());
