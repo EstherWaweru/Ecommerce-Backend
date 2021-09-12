@@ -309,7 +309,23 @@ def add_item(request):
         return render(request,'products/item.html')
 
 def edit_item(request):
-    pass
+    if request.method == 'POST':
+        id = request.POST.get('item_id')
+        try:
+            item = Item.objects.get(id = id)
+            sub_categories = SubCategory.objects.all().values('id','name')
+            brands = Brand.objects.all().values('id','name')
+            data = {'sub_category_id':item.subcategories.id,'sub_category_name':item.subcategories.name,
+            'brand_id':item.brands.id,'brand_name':item.brands.name,'image':item.image.url,
+            'description':item.description,'price':item.price,'discounted_price':
+            item.discounted_price,'name':item.name,'sub_categories':list(sub_categories),'brands':list(brands)}
+
+            return JsonResponse(data,safe = False)
+        except:
+            return render(request,'products/sub_category.html')    
+    else:
+        return render(request,'products/sub_category.html')
+    
 def edit_item_ajax(request):
     pass
 def delete_item(request):
