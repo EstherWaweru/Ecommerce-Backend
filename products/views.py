@@ -48,15 +48,10 @@ def edit_category(request):
             return JsonResponse(data, safe = False)
         except:
             return render(request,'products/categories.html')
-
-def get_category(request):
-    pass
 def get_all_categories(request):
     categories = Category.objects.all()
     context={'categories':categories}
     return render(request,'products/category.html',context)
-def delete_categories(request):
-    pass
 def category_view_ajax(request):
     if request.method=='POST':
         category_id=request.POST.get("category_id")
@@ -66,10 +61,6 @@ def category_view_ajax(request):
         return JsonResponse(data)
     else:
         return render(request,'products/category.html')
-def create_category_ajax(request):
-    pass
-def create_category(request):
-    pass
 def delete_category_ajax(request):
     if request.method == 'POST':
         category_id = request.POST.get('id')
@@ -101,20 +92,14 @@ def edit_category_ajax(request):
             messages.error(request,'Something went wrong!')
             return render(request,'products/categories.html')
 
-
-def ajax_edit_category(request):
-    pass
 def delete_multiple_categories(request):
     pass
 def add_multiple_categories(request):
     if request.method == 'POST':
         category_name = request.POST.getlist('category_name[]')
-        print(category_name)
         category_image = request.POST.getlist('category_image[]')
         category_dict = {category_name[i]: category_image[i] for i in range(len(category_name))}
-        print(category_dict)
         categories = []
-        print("-----------------")
         for category in category_dict:
             name=category
             image = category_dict[category]
@@ -209,40 +194,91 @@ def add_multiple_sub_categories(request):
 
     
         
-
-
-
-
-
+#Brabd views
 def add_brand(request):
-    pass
+    if request.method == 'POST':
+        name = request.POST.get('brand_name')
+        image = request.POST.get('brand_image')
+        Brand.objects.create(name = name,image = image)
+        messages.success(request,'Operation succesful')
+        return JsonResponse({'status':'success'},safe = False)
+    else:
+        return render(request,'products/brand.html')
+
+
 def update_brand(request):
-    pass
-def get_brand(request):
-    pass
+    if request.method == 'POST':
+        id = request.POST.get('brand_id')
+        try:
+            brand = Brand.objects.get(id = id)
+            data = {'name':brand.name,'image':brand.image.url,'id':brand.id}
+            return JsonResponse(data,safe=False)
+        except:
+            return render(request,'products/brand.html')
+
+def edit_brand_ajax(request):
+    if request.method == 'POST':
+        name = request.POST.get('brand_name')
+        image = request.POST.get('brand_image')
+        id = request.POST.get('id')
+        try:
+            Brand.objects.filter(id = id).update(name = name, image = image,id = id)
+            messages.success(request,'Operation succesful')
+            return JsonResponse({'status':'success'}, safe = False)
+        except:
+            messages.error(request,'Something went wrong')
+            return render(request,'products/brand.html')
 def get_all_brands(request):
-    pass
+    brands = Brand.objects.all()
+    context = {'brands':brands}
+    return render(request,'products/brand.html',context=context)
 def delete_brand(request):
+    if request.method == 'POST':
+        id = request.POST.get('id')
+        try:
+            Brand.objects.filter(id = id).delete()
+            messages.success(request,'Operation succesful')
+            return JsonResponse({'status':'success'},safe = False)
+        except:
+            messages.error(request,'Something went wrong!')
+            return render(request,'products/brand.html')
+
+def delete_multiple_brands(request):
     pass
+def brand_view_ajax(request):
+    if request.method == 'POST':
+        id = request.POST.get('id')
+        brand = Brand.objects.get(id = id)
+        products = brand.products.all()
+        data={'brand':brand.name,'items':list(products.values('name','id'))}
+        return JsonResponse(data)
+    else:
+        return render(request,'products/brand.html')
 
-# def add_category(request):
-#     pass
-# def update_category(request):
-#     pass
-# def get_category(request):
-#     pass
-# def get_all_categories(request):
-#     pass
-# def delete_categories(request):
-#     pass
 
-# def add_category(request):
-#     pass
-# def update_category(request):
-#     pass
-# def get_category(request):
-#     pass
-# def get_all_categories(request):
-#     pass
-# def delete_categories(request):
-#     pass
+def add_multiple_brands(request):
+    if request.method == 'POST':
+        brand_name = request.POST.getlist('brand_name[]')
+        brand_image = request.POST.getlist('brand_image[]')
+        brand_dict = {brand_name[i]: brand_image[i] for i in range(len(brand_name))}
+        brands = []
+        try:
+            for brand in brand_dict:
+                name=brand
+                image = brand_dict[brand]
+                brands.append(Brand(
+                name=name,
+                image=image,
+                ))
+            Brand.objects.bulk_create(brands)
+            messages.success(request,'Operation Successful')
+            return JsonResponse({'status':"Sucessfuly"})
+        except:
+            messages.error(request,'Something went wrong')
+            return render(request,'products/brand.html')
+    else:
+        return render(request,'products/brand.html')
+
+
+    
+
