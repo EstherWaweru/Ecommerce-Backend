@@ -43,8 +43,9 @@
 
                     {% for sub_category in sub_categories %}
                     <tr>
-
+                        
                         <td>{{ sub_category.id}}</td>
+                        <td>{{sub_category.categories}}</td>
                         <td>{{ sub_category.name }}</td>
 
                         <td>{{ sub_category.image }}</td>
@@ -115,12 +116,17 @@
         <div class="modal-body">
           <form id="add_sub_category_form"  enctype="multipart/form-data">
             {% csrf_token %}
+            <div class = "form-group">
+                <label for="category">Category</label>
+                <select class="form-select form-control categories_list" id ="category" aria-label="Default select example">
+                  </select>
+            </div>
        <div class="form-group">
-          <label for="sub_category_name">sub_category Name</label><span id="error_sub_category_name" class='text-danger ms-3'></span>
+          <label for="sub_category_name">Sub Category Name</label><span id="error_sub_category_name" class='text-danger ms-3'></span>
           <input type="text" name="sub_category_name" placeholder="Enter a sub_category Name"class="form-control " id="sub_category_name">
         </div>
         <div class="form-group">
-          <label for="sub_category_image">sub_category image</label>
+          <label for="sub_category_image">Sub Category Image</label>
           <input type="file" name="sub_category_image" class="form-control" id="sub_category_image">
         </div>
         </form>
@@ -206,18 +212,19 @@
         
       });
     $(".add_sub_category").click(function(){
+        $(".categories_list").html("");
         $.ajax({
         url:"{% url 'products:get_categories' %}",
         type:"POST",
         data:{csrfmiddlewaretoken:'{{csrf_token}}'},
         success:function(response){
             console.log(response);
-          categories_name = response.name;
-          $("#edit_sub_category_span").html(categories_name);
-          // $('#edit_sub_category_image').val(response.image);
-          $('#edit_sub_category_name').val(categories_name);
-          $("#sub_category_id").val(sub_category_id);
-          $("#editSubCategoryModal").modal("show");
+            $.each(response,function name(key,value) {
+                console.log(value['name']);
+                console.log(value['id']);
+                $(".categories_list").append(`<option value =` +value['id']+`>`+value['name']+`</option>`);
+            });
+          $("#createSubCategoryModal").modal("show");
         },
         error:function(){
           alert("Something went wrong");
@@ -243,20 +250,14 @@
         return false;
       }
       else{
-        var fd = new FormData();
-        var files = $('#sub_category_image')[0].files;
-        // Check file selected or not
-        if(files.length > 0 ){
-           fd.append('sub_category_image',files[0]);}
-        
+        var category = $('.categories_list').val();
+        console.log(category);
         var sub_category_name = $('#sub_category_name').val();
-        // var myform = document.getElementById("add_sub_category_form");
-        // var fd1 = new FormData(myform );
         var sub_category_image=$('#sub_category_image').val();
         $.ajax({
           url:"{% url 'products:add_sub_category' %}",
           method:"POST",
-          data:{sub_category_name,sub_category_image},
+          data:{csrfmiddlewaretoken:'{{csrf_token}}',category,sub_category_name,sub_category_image},
           // processData: false,
           success:function(response){
             $('#createSubCategoryModal').modal('hide');

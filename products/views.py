@@ -124,12 +124,23 @@ def get_all_sub_categories(request):
     context={'sub_categories':sub_categories}
     return render(request,'products/sub_category.html',context)
 def get_categories(request):
-    
     categories = Category.objects.all().values('id','name')
     return JsonResponse(list(categories),safe = False)
     
 def add_sub_category(request):
-    pass
+    if request.method == 'POST':
+        category_id = request.POST.get('category')
+        name = request.POST.get('sub_category_name')
+        image = request.POST.get('sub_category_image')
+        category = Category.objects.get(id = category_id)
+        if category:
+            SubCategory.objects.create(name = name,image = image,categories = category)
+            messages.success(request,'Operation succesful',)
+            return JsonResponse(json.dumps({'status':'successful'}))
+        else:
+            messages.error(request,'Something went wrong!')
+            render(request,'products/sub_category.html')
+
 def delete_sub_category_ajax(request):
     pass
 def edit_sub_category(request):
