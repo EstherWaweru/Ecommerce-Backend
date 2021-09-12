@@ -82,14 +82,17 @@ def edit_category_ajax(request):
         #check if category exist
         category = Category.objects.get(id = category_id)
         data ={}
-        if category.name == category_name:
-            return JsonResponse(data = {'status_code':400,'detail':'Object Exists!'},safe=False)
+        # if category.name != category_name:
+        #     if Category.object.get(name = category_name):
+        #         messages.error(request,'Category Exists!')
+        #         return render(request,'products/categories.html')
         try:
             Category.objects.filter(id = category_id).update(name = category_name,image = category_image)
             data = {'status':200,'detail':'Success'}
             return JsonResponse(json.dumps(data))
         except:
-            return JsonResponse(data = {'status_code':500,'detail':'Something went wrong!'},safe=False)
+            messages.error(request,'Something went wrong!')
+            return render(request,'products/categories.html')
 
 
 def ajax_edit_category(request):
@@ -139,14 +142,48 @@ def add_sub_category(request):
             return JsonResponse(json.dumps({'status':'successful'}))
         else:
             messages.error(request,'Something went wrong!')
-            render(request,'products/sub_category.html')
+            return render(request,'products/sub_category.html')
 
 def delete_sub_category_ajax(request):
     pass
 def edit_sub_category(request):
-    pass
+    if request.method == 'POST':
+        id = request.POST.get('sub_category_id')
+        try:
+            sub_category = SubCategory.objects.get(id = id)
+            categories = Category.objects.all().values('id','name')
+            data = {'category_id':sub_category.categories.id,'name':sub_category.name,
+            'image':sub_category.image.url,'category_name':sub_category.categories.name,'categories':list(categories)}
+
+            return JsonResponse(data,safe = False)
+        except:
+            return render(request,'products/sub_category.html')    
+    else:
+        return render(request,'products/sub_category.html')
 def edit_sub_category_ajax(request):
-    pass
+    if request.method == 'POST':
+        print(request.POST)
+        name = request.POST.get('sub_category_name')
+        image = request.POST.get('sub_category_image')
+        category_id = request.POST.get('category')
+        id = request.POST.get('id')
+        # try:
+        category = Category.objects.get(id = category_id)
+        sub_category = SubCategory.objects.get(id = id)
+        # if sub_category.name != name:
+            # if SubCategory.objects.get(name = name):
+            #     messages.error(request,'Sub Category Already Exists!')
+            #     return render(request,'products/sub_category.html')
+
+        SubCategory.objects.filter(id = id).update(name = name,image = image,categories = category)
+        messages.success(request,'Operation succesful')
+        return JsonResponse(json.dumps({'status':'Success!'}),safe = False)
+        # except:
+        #     messages.error(request,'Something went wrong')
+        #     return render(request,'products/sub_category.html')
+    else:
+        return render(request,'products/sub_category.html')
+
 def delete_multiple_sub_categories(request):
     pass
 def add_multiple_sub_categories(request):

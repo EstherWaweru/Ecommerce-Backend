@@ -178,12 +178,17 @@
       </div>
       <div class="modal-body">
         <form id="edit_sub_category_form"  enctype="multipart/form-data">
+            <div class = "form-group">
+                <label for="categorys">Category</label>
+                <select class="form-select form-control categories_list" id ="categorys" aria-label="Default select example">
+                </select>
+            </div>
         <div class="form-group">
-          <label for="edit_sub_category_name">sub_category Name</label><span id="edit_error_sub_category_name" class='text-danger ms-3'></span>
-          <input type="text" name="edit_sub_category_name" placeholder="Enter a sub_category Name"class="form-control " id="edit_sub_category_name" required>
+          <label for="edit_sub_category_name">sub category name</label><span id="edit_error_sub_category_name" class='text-danger ms-3'></span>
+          <input type="text" name="edit_sub_category_name" placeholder="Enter a sub category name"class="form-control " id="edit_sub_category_name" required>
         </div>
         <div class="form-group">
-          <label for="edit_sub_category_image">sub_category image</label>
+          <label for="edit_sub_category_image">sub category image</label>
           <input type="file" name="edit_sub_category_image" class="form-control" id="edit_sub_category_image">
         </div>
       </form>
@@ -298,16 +303,24 @@
     });
     $(".edit_sub_category").click(function(){
       var sub_category_id=$(this).parents("tr").children("td:eq(0)").text();
-      
+      $(".categories_list").html("");
       $.ajax({
         url:"{% url 'products:edit_sub_category' %}",
         type:"POST",
-        data:{'sub_category_id':sub_category_id,csrfmiddlewaretoken:'{{csrf_token}}'},
+        data:{sub_category_id,csrfmiddlewaretoken:'{{csrf_token}}'},
         success:function(response){
-          categories_name = response.name;
-          $("#edit_sub_category_span").html(categories_name);
+            console.log(response);
+          var sub_category_name = response.name;
+          var categories = response.categories;
+          $.each(categories,function name(key,value) {
+                console.log(value['name']);
+                console.log(value['id']);
+                $(".categories_list").append(`<option value =` +value['id']+`>`+value['name']+`</option>`);
+            });
+          $("#edit_sub_category_span").html(sub_category_name);
           // $('#edit_sub_category_image').val(response.image);
-          $('#edit_sub_category_name').val(categories_name);
+          $('.categories_list').val(response.category_id);
+          $('#edit_sub_category_name').val(sub_category_name);
           $("#sub_category_id").val(sub_category_id);
           $("#editSubCategoryModal").modal("show");
         },
@@ -317,6 +330,7 @@
       });
     });
     $('.edit_sub_category_ajax').click(function(){
+        
       var id=$("#sub_category_id").val();
       console.log(id);
       if( $.trim($('#edit_sub_category_name').val()).length==0 ){
@@ -333,18 +347,14 @@
       }
       else{
       var sub_category_name=$("#edit_sub_category_name").val();
-      // var fd = new FormData();
-      // var files = $('#sub_category_image')[0].files;
-      //   // Check file selected or not
-      // if(files.length > 0 ){
-      //     fd.append('sub_category_image',files[0]);}
-        
+     var category = $('.categories_list :selected').val();
+      console.log(category);
        var sub_category_image=$("#edit_sub_category_image").val();
      
            $.ajax({
             url:"{% url 'products:edit_sub_category_ajax' %}",
             method:"POST",
-            data:{csrfmiddlewaretoken:'{{csrf_token}}','sub_category_name':sub_category_name,'sub_category_id':id,'sub_category_image':sub_category_image},
+            data:{csrfmiddlewaretoken:'{{csrf_token}}',sub_category_name,id,sub_category_image,category},
             dataType: 'JSON',
             success:function(response){
               console.log(response.status);
