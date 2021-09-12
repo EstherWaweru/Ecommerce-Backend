@@ -284,8 +284,30 @@ def get_all_items(request):
     items = Item.objects.all()
     context = {'items':items}
     return render(request,'products/item.html',context=context)
+def get_brands_subcategories(request):
+    sub_categories = SubCategory.objects.all().values('id','name')
+    brands = Brand.objects.all().values('id','name')
+    data = {'brands':list(brands),'sub_categories':list(sub_categories)}
+    return JsonResponse(data,safe = False)
 def add_item(request):
-    pass
+    if request.method == 'POST':
+        print(request.POST)
+        name = request.POST.get('item_name')
+        image = request.POST.get('item_image')
+        description = request.POST.get('description')
+        price = request.POST.get('price')
+        discounted_price =request.POST.get('discounted_price')
+        brand_id = request.POST.get('brand_id')
+        sub_category_id = request.POST.get('sub_category_id')
+        brand = Brand.objects.get(id = brand_id)
+        sub_category = SubCategory.objects.get(id = sub_category_id)
+        Item.objects.create(name = name,image = image,description=description,price = price,
+        discounted_price = discounted_price,brands = brand,subcategories=sub_category)
+        messages.success(request,'Operation successful!')
+        return JsonResponse({'status':'success'},safe=False)
+    else:
+        return render(request,'products/item.html')
+
 def edit_item(request):
     pass
 def edit_item_ajax(request):

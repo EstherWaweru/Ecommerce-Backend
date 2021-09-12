@@ -39,7 +39,8 @@ urlpatterns=[
     path('edit_item_ajax/', views.edit_item_ajax,name = 'edit_item_ajax'),
     path('delete_multiple_items/',views.delete_multiple_items,name = 'delete_multiple_items'),
     path('item_view_ajax/',views.item_view_ajax,name = 'item_view_ajax'),
-    path('add_multiple_items', views.add_multiple_items, name = 'add_multiple_items')
+    path('add_multiple_items', views.add_multiple_items, name = 'add_multiple_items'),
+    path('get_brands_subcategories', views.get_brands_subcategories ,name = 'get_brands_subcategories')
     
     
 

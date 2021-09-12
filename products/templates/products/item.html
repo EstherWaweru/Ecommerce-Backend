@@ -17,7 +17,7 @@
     <div class="container-fluid">
         <div class=row>
           <div class="col-sm-4">
-            <a href="#" class="btn btn-success " data-target="#createitemModal" data-toggle="modal"><span class=""><i class="feather icon-plus"></i> Add New item</span></a>
+            <a href="#" class="btn btn-success create_item" data-target="#createitemModal" data-toggle="modal"><span class=""><i class="feather icon-plus"></i> Add New item</span></a>
           </div>
           <div col="col-sm-4">
             <a href="#" class="btn btn-secondary " data-target="#createMultipleitems" data-toggle="modal"><span class=""><i class="feather icon-plus"></i> Add Multiple items</span></a>
@@ -119,14 +119,35 @@
         <div class="modal-body">
           <form id="add_item_form"  enctype="multipart/form-data">
             {% csrf_token %}
+            <div class ="form-group">
+                <label for="brands">Item Brand
+                </label>
+                <select class="form-select form-control brands" id ="brands" aria-label="Default select example"></select>
+            </div>
+            <div class ="form-group">
+                <label for="sub_categories">Item Sub Category</label>
+                <select class="form-select form-control sub_categories" id ="sub_categories" aria-label="Default select example"></select>
+            </div>
        <div class="form-group">
-          <label for="item_name">item Name</label><span id="error_item_name" class='text-danger ms-3'></span>
+          <label for="item_name">Item name</label><span id="error_item_name" class='text-danger ms-3'></span>
           <input type="text" name="item_name" placeholder="Enter a item Name"class="form-control " id="item_name">
         </div>
         <div class="form-group">
-          <label for="item_image">item image</label>
+          <label for="item_image">Item image</label>
           <input type="file" name="item_image" class="form-control" id="item_image">
         </div>
+        <div class="form-group">
+            <label for="item_description">Item Description</label>
+            <input type="text" name="item_description" placeholder="Item description" class="form-control" id="item_description">
+          </div>
+        <div class="form-group">
+            <label for="item_price">Item price</label>
+            <input type="text" name="item_price" placeholder="Enter item proce"class="form-control " id="item_price">
+          </div>
+          <div class="form-group">
+            <label for="item_discounted_price">Item discounted_price</label>
+            <input type="text" name="item_discounted_price" placeholder = "Enter a discounted price " class="form-control" id="item_discounted_price">
+          </div>
         </form>
        </div>
     
@@ -233,6 +254,31 @@
         $(".delete_all_icon").hide();
         
       });
+    $('.create_item').click(function(){
+        $(".sub_categories").html("");
+        $(".brands").html("");
+        $.ajax({
+        url:"{% url 'products:get_brands_subcategories' %}",
+        type:"POST",
+        data:{csrfmiddlewaretoken:'{{csrf_token}}'},
+        success:function(response){
+            console.log(response);
+            brands = response.brands;
+            sub_categories = response.sub_categories;
+            $.each(brands,function name(key,value) {
+                $(".brands").append(`<option value =` +value['id']+`>`+value['name']+`</option>`);
+            });
+            $.each(sub_categories,function name(key,value) {
+                $(".sub_categories").append(`<option value =` +value['id']+`>`+value['name']+`</option>`);
+            });
+          $("#createitemModal").modal("show");
+        },
+        error:function(){
+          alert("Something went wrong");
+        },
+      });
+
+    });
     
     $(".add_item_ajax").click(function(){
       
@@ -253,10 +299,16 @@
       else{
         var item_name = $('#item_name').val();
         var item_image=$('#item_image').val();
+        var description = $('#item_description').val();
+        var price = $('#item_price').val();
+        var discounted_price = $('#item_discounted_price').val()
+        var brand_id = $(".brands").val()
+        var sub_category_id = $(".sub_categories").val()
         $.ajax({
           url:"{% url 'products:add_item' %}",
           method:"POST",
-          data:{csrfmiddlewaretoken:'{{csrf_token}}',item_name,item_image},
+          data:{csrfmiddlewaretoken:'{{csrf_token}}',item_name,item_image,description,price,discounted_price
+        ,brand_id,sub_category_id},
           // processData: false,
           success:function(response){
             $('#createitemModal').modal('hide');
@@ -264,7 +316,7 @@
             location.reload(true);
           },
           error:function(){
-            $('#createitemModal').modal('hide');
+            $('#').modal('hide');
             $('#createitemModal').find('input').val('');
             location.reload(true);
             console.log("Something went wrong!");
