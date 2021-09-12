@@ -17,9 +17,9 @@
           <div class="col-sm-4">
             <a href="#" class="btn btn-success " data-target="#createCategoryModal" data-toggle="modal"><span class=""><i class="feather icon-plus"></i> Add New Category</span></a>
           </div>
-          <div col="col-sm-4">
+          <!-- <div col="col-sm-4">
             <a href="#" class="btn btn-secondary " data-target="#createBulkCategories" data-toggle="modal"><span class=""><i class="feather icon-plus"></i> Add Bulk Categories</span></a>
-          </div>
+          </div> -->
           <div col="col-sm-4">
             <a href="#" class="btn btn-secondary " data-target="#createMultipleCategories" data-toggle="modal"><span class=""><i class="feather icon-plus"></i> Add Multiple Categories</span></a>
           </div>
@@ -51,6 +51,9 @@
 
                         <td>{{ category.image }}</td>
                         <td>
+                          <a href="#" id ="view_role"
+                          class="btn btn-info btn-tool view_category" >
+                              <i class="fas fa-eye"></i></a>
                             <a href="#" class="btn btn-tool btn-secondary edit_category">
                                 <i style="color:black"class="fas fa-edit"></i></a>
 
@@ -160,6 +163,30 @@
         <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
       </div>
     </div>
+  </div>
+</div>
+
+<!-- View Modal UI -->
+<div class="modal fade" id="viewModal" role="dialog">
+  <div class="modal-dialog">
+
+    <!-- Modal content-->
+    <div class="modal-content">
+      <div class="modal-header">
+        <h4 class="modal-title"><span id="name_span"></span> Sub Categories</h4>
+        <button type="button" class="close" data-dismiss="modal">&times;</button>
+      </div>
+      <div class="modal-body">
+        <div class="container">
+          <ol class="sub_categories_list">
+          </ol>
+          </div>
+      </div>
+      <div class="modal-footer justify-content-center">
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+      </div>
+    </div>
+
   </div>
 </div>
 <!-- Edit  Group Modal -->
@@ -398,6 +425,32 @@
     }
 
   });
+  $(".view_category").click(function(){
+      var category_id=$(this).parents("tr").children("td:eq(0)").text();
+      $('.sub_categories_list').html("");
+      $.ajax({
+        url:"{% url 'products:category_view_ajax' %}",
+        type:"POST",
+        data:{category_id,csrfmiddlewaretoken: '{{ csrf_token }}'},
+        
+        success:function(response){
+          var sub_categories=response.sub_categories;
+          var category=response.category;
+          console.log(response)
+          $("#viewModal span").html(category);
+          $.each(sub_categories,function name(key,value) {
+            console.log(value['name']);
+            $('.sub_categories_list').append('<li>'+value['name']+'</li>');
+          });
+          
+          $("#viewModal").modal("show");
+        },
+        error:function(){
+          alert("Something went wrong");
+        },
+      });
+      $("#viewModal").modal("hide");
+    });
   $('.btn_add_categories').click(function(e){
      e.preventDefault();
      
@@ -417,7 +470,7 @@
     var category_image=[]
     var category_name=[]
     $('input[name="txt_category_image[]"]').each(function() {
-    category_image.push($(this).val().toLowerCase().replace(/\s/g,'_'));
+    category_image.push($(this).val());
     });
     $('input[name="txt_category_name[]"]').each(function() {
     category_name.push($(this).val());
