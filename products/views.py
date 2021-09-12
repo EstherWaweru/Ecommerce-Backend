@@ -145,7 +145,18 @@ def add_sub_category(request):
             return render(request,'products/sub_category.html')
 
 def delete_sub_category_ajax(request):
-    pass
+    if request.method == 'POST':
+        id  = request.POST.get('id')
+        try:
+            SubCategory.objects.filter(id = id).delete()
+            messages.success(request,'Operation successful')
+            return JsonResponse({'status','sucess'},safe = False)
+        except:
+            messages.error(request,'Something went wrong')
+            return render(request,'products/sub_category.html')
+    else:
+        return render(request,'products/sub_category.html')
+
 def edit_sub_category(request):
     if request.method == 'POST':
         id = request.POST.get('sub_category_id')
