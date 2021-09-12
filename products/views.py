@@ -197,9 +197,18 @@ def add_multiple_sub_categories(request):
 
     
         
-
+#Brabd views
 def add_brand(request):
-    pass
+    if request.method == 'POST':
+        name = request.POST.get('brand_name')
+        image = request.POST.get('brand_image')
+        Brand.objects.create(name = name,image = image)
+        messages.success(request,'Operation succesful')
+        return JsonResponse({'status':'success'},safe = False)
+    else:
+        return render(request,'products/brand.html')
+
+
 def update_brand(request):
     pass
 def edit_brand_ajax(request):
@@ -209,7 +218,7 @@ def get_brand(request):
 def get_all_brands(request):
     brands = Brand.objects.all()
     context = {'brands':brands}
-    return render(request,'products/brand.html')
+    return render(request,'products/brand.html',context=context)
 def delete_brand(request):
     pass
 def delete_multiple_brands(request):
@@ -219,24 +228,3 @@ def brand_view_ajax(request):
 def add_multiple_brands(request):
     pass
 
-# def add_category(request):
-#     pass
-# def update_category(request):
-#     pass
-# def get_category(request):
-#     pass
-# def get_all_categories(request):
-#     pass
-# def delete_categories(request):
-#     pass
-
-# def add_category(request):
-#     pass
-# def update_category(request):
-#     pass
-# def get_category(request):
-#     pass
-# def get_all_categories(request):
-#     pass
-# def delete_categories(request):
-#     pass

@@ -253,7 +253,7 @@
         $.ajax({
           url:"{% url 'products:add_brand' %}",
           method:"POST",
-          data:{brand_name,brand_image},
+          data:{csrfmiddlewaretoken:'{{csrf_token}}',brand_name,brand_image},
           // processData: false,
           success:function(response){
             $('#createbrandModal').modal('hide');

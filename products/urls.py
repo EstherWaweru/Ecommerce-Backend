@@ -30,7 +30,8 @@ urlpatterns=[
     path('edit_brand_ajax/',views.edit_brand_ajax,name = 'edit_brand_ajax'),
     path('delete_multiple_brands/',views.delete_multiple_brands, name = 'delete_multiple_brands'),
     path('brand_view_ajax/',views.brand_view_ajax, name ='brand_view_ajax'),
-    path('add_multiple_brands/',views.add_multiple_brands,name = 'add_multiple_brands')
+    path('add_multiple_brands/',views.add_multiple_brands,name = 'add_multiple_brands'),
+    
 
 
 ]
