@@ -300,10 +300,8 @@
         type:"POST",
         data:{brand_id,csrfmiddlewaretoken:'{{csrf_token}}'},
         success:function(response){
-            console.log(response);
           brands_name = response.name;
           $("#edit_brand_span").html(brands_name);
-          // $('#edit_brand_image').val(response.image);
           $('#edit_brand_name').val(brands_name);
           $("#brand_id").val(brand_id);
           $("#editbrandModal").modal("show");
@@ -330,18 +328,12 @@
       }
       else{
       var brand_name=$("#edit_brand_name").val();
-      // var fd = new FormData();
-      // var files = $('#brand_image')[0].files;
-      //   // Check file selected or not
-      // if(files.length > 0 ){
-      //     fd.append('brand_image',files[0]);}
-        
        var brand_image=$("#edit_brand_image").val();
      
            $.ajax({
             url:"{% url 'products:edit_brand_ajax' %}",
             method:"POST",
-            data:{csrfmiddlewaretoken:'{{csrf_token}}','brand_name':brand_name,'brand_id':id,'brand_image':brand_image},
+            data:{csrfmiddlewaretoken:'{{csrf_token}}',brand_name,id,brand_image},
             dataType: 'JSON',
             success:function(response){
               console.log(response.status);
