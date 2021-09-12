@@ -407,19 +407,19 @@
 
   });
   $(".view_brand").click(function(){
-      var brand_id=$(this).parents("tr").children("td:eq(0)").text();
+      var id=$(this).parents("tr").children("td:eq(0)").text();
       $('.sub_brands_list').html("");
       $.ajax({
         url:"{% url 'products:brand_view_ajax' %}",
         type:"POST",
-        data:{brand_id,csrfmiddlewaretoken: '{{ csrf_token }}'},
+        data:{id,csrfmiddlewaretoken: '{{ csrf_token }}'},
         
         success:function(response){
-          var sub_brands=response.sub_brands;
+          var item=response.items;
           var brand=response.brand;
           console.log(response)
           $("#viewModal span").html(brand);
-          $.each(sub_brands,function name(key,value) {
+          $.each(item,function name(key,value) {
             console.log(value['name']);
             $('.sub_brands_list').append('<li>'+value['name']+'</li>');
           });

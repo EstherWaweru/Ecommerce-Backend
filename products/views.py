@@ -97,12 +97,9 @@ def delete_multiple_categories(request):
 def add_multiple_categories(request):
     if request.method == 'POST':
         category_name = request.POST.getlist('category_name[]')
-        print(category_name)
         category_image = request.POST.getlist('category_image[]')
         category_dict = {category_name[i]: category_image[i] for i in range(len(category_name))}
-        print(category_dict)
         categories = []
-        print("-----------------")
         for category in category_dict:
             name=category
             image = category_dict[category]
@@ -244,12 +241,21 @@ def delete_brand(request):
             return JsonResponse({'status':'success'},safe = False)
         except:
             messages.error(request,'Something went wrong!')
-            return render(request,'products/brand.html',context=context)
+            return render(request,'products/brand.html')
 
 def delete_multiple_brands(request):
     pass
 def brand_view_ajax(request):
-    pass
+    if request.method == 'POST':
+        id = request.POST.get('id')
+        brand = Brand.objects.get(id = id)
+        products = brand.products.all()
+        data={'brand':brand.name,'items':list(products.values('name','id'))}
+        return JsonResponse(data)
+    else:
+        return render(request,'products/brand.html')
+
+
 def add_multiple_brands(request):
     if request.method == 'POST':
         brand_name = request.POST.getlist('brand_name[]')
