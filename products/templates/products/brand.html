@@ -298,8 +298,9 @@
       $.ajax({
         url:"{% url 'products:edit_brand' %}",
         type:"POST",
-        data:{'brand_id':brand_id,csrfmiddlewaretoken:'{{csrf_token}}'},
+        data:{brand_id,csrfmiddlewaretoken:'{{csrf_token}}'},
         success:function(response){
+            console.log(response);
           brands_name = response.name;
           $("#edit_brand_span").html(brands_name);
           // $('#edit_brand_image').val(response.image);

@@ -210,9 +210,27 @@ def add_brand(request):
 
 
 def update_brand(request):
-    pass
+    if request.method == 'POST':
+        id = request.POST.get('brand_id')
+        try:
+            brand = Brand.objects.get(id = id)
+            data = {'name':brand.name,'image':brand.image.url,'id':brand.id}
+            return JsonResponse(data,safe=False)
+        except:
+            return render(request,'products/brand.html')
+
 def edit_brand_ajax(request):
-    pass
+    if request.method == 'POST':
+        name = request.POST.get('brand_name')
+        image = request.POST.get('brand_image')
+        id = request.POST.get('id')
+        try:
+            Brand.objects.filter(id = id).update(name = name, image = image,id = id)
+            messages.success(request,'Operation succesful')
+            return JsonResponse({'status':'success'}, safe = False)
+        except:
+            messages.error(request,'Something went wrong')
+            return render(request,'products/brand.html')
 def get_brand(request):
     pass
 def get_all_brands(request):
