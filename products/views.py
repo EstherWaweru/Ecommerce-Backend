@@ -236,7 +236,16 @@ def get_all_brands(request):
     context = {'brands':brands}
     return render(request,'products/brand.html',context=context)
 def delete_brand(request):
-    pass
+    if request.method == 'POST':
+        id = request.POST.get('id')
+        try:
+            Brand.objects.filter(id = id).delete()
+            messages.success(request,'Operation succesful')
+            return JsonResponse({'status':'success'},safe = False)
+        except:
+            messages.error(request,'Something went wrong!')
+            return render(request,'products/brand.html',context=context)
+
 def delete_multiple_brands(request):
     pass
 def brand_view_ajax(request):
@@ -244,23 +253,26 @@ def brand_view_ajax(request):
 def add_multiple_brands(request):
     if request.method == 'POST':
         brand_name = request.POST.getlist('brand_name[]')
-        print(brand_name)
         brand_image = request.POST.getlist('brand_image[]')
         brand_dict = {brand_name[i]: brand_image[i] for i in range(len(brand_name))}
-        print(brand_dict)
         brands = []
-        print("-----------------")
-        for brand in brand_dict:
-            name=brand
-            image = brand_dict[brand]
-            brands.append(Brand(
-            name=name,
-            image=image,
-             ))
-        print("*****************")
-        print(brands)
-        Brand.objects.bulk_create(brands)
-        messages.success(request,'Successfuly')
-        return JsonResponse({'status':"Sucessfuly"})
+        try:
+            for brand in brand_dict:
+                name=brand
+                image = brand_dict[brand]
+                brands.append(Brand(
+                name=name,
+                image=image,
+                ))
+            Brand.objects.bulk_create(brands)
+            messages.success(request,'Operation Successful')
+            return JsonResponse({'status':"Sucessfuly"})
+        except:
+            messages.error(request,'Something went wrong')
+            return render(request,'products/brand.html')
+    else:
+        return render(request,'products/brand.html')
+
+
     
 
