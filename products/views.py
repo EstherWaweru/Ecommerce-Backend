@@ -231,8 +231,6 @@ def edit_brand_ajax(request):
         except:
             messages.error(request,'Something went wrong')
             return render(request,'products/brand.html')
-def get_brand(request):
-    pass
 def get_all_brands(request):
     brands = Brand.objects.all()
     context = {'brands':brands}
@@ -244,5 +242,25 @@ def delete_multiple_brands(request):
 def brand_view_ajax(request):
     pass
 def add_multiple_brands(request):
-    pass
+    if request.method == 'POST':
+        brand_name = request.POST.getlist('brand_name[]')
+        print(brand_name)
+        brand_image = request.POST.getlist('brand_image[]')
+        brand_dict = {brand_name[i]: brand_image[i] for i in range(len(brand_name))}
+        print(brand_dict)
+        brands = []
+        print("-----------------")
+        for brand in brand_dict:
+            name=brand
+            image = brand_dict[brand]
+            brands.append(Brand(
+            name=name,
+            image=image,
+             ))
+        print("*****************")
+        print(brands)
+        Brand.objects.bulk_create(brands)
+        messages.success(request,'Successfuly')
+        return JsonResponse({'status':"Sucessfuly"})
+    
 
